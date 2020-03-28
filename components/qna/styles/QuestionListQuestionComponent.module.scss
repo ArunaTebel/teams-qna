@@ -1,0 +1,31 @@
+.questionItem {
+  height: 180px;
+}
+
+.questionItemStatsGrid {
+  width: 150px;
+  margin-left: 0;
+  margin-top: -5px !important;
+}
+
+.questionItemStatsGridRow {
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+.questionItemStatsNum {
+  font-weight: bold;
+}
+
+.questionItemAskerGroup {
+  float: right;
+}
+
+.questionItemLabels {
+  float: left;
+}
+
+.questionItemStatsGridRowDiv {
+  text-align: center;
+  padding-left: 0 !important;
+}
