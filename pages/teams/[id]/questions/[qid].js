@@ -1,11 +1,16 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../../../components/layout/QnAMainLayoutComponent";
 import C from "../../../../components/util/consts";
-import fetch from 'isomorphic-unfetch';
 import {withRouter} from 'next/router';
 import QnAHttp from "../../../../components/util/QnAHttp";
+import QnAQuestionComponent from "../../../../components/qna/QnAQuestionComponent";
+import {Divider, Grid, Item} from "semantic-ui-react";
+import QnATeamDescriptionCardComponent from "../../../../components/qna/QnATeamDescriptionCardComponent";
+import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
+import QnACommentsComponent from "../../../../components/qna/QnACommentsComponent";
+import QnAAnswersComponent from "../../../../components/qna/QnAAnswersComponent";
 
-class ArchQnAQuestionComponent extends Component {
+class ArchQnAQuestionPageComponent extends Component {
 
     state = {};
 
@@ -19,10 +24,41 @@ class ArchQnAQuestionComponent extends Component {
     render() {
         return (
             <QnAMainLayoutComponent>
-                {this.props.question.name}
+                <Grid celled='internally'>
+                    <Grid.Row>
+                        <Grid.Column width={12}>
+                            <Item.Group divided>
+                                <QnAQuestionComponent question={this.props.question} detailed={true}/>
+
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={1}>
+                                        </Grid.Column>
+                                        <Grid.Column width={14}>
+                                            <QnACommentsComponent collapsed={false}/>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={16}>
+                                            <QnAAnswersComponent/>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+
+                            </Item.Group>
+                        </Grid.Column>
+                        <Grid.Column width={4}>
+                            <h3>Related Questions</h3>
+                            <QnAFluidParagraphPlaceholderListComponent/>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </QnAMainLayoutComponent>
         )
     }
 }
 
-export default withRouter(ArchQnAQuestionComponent)
+export default withRouter(ArchQnAQuestionPageComponent)

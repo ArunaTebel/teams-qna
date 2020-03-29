@@ -1,31 +1,40 @@
-.questionItem {
+.answerItem {
   height: 180px;
 }
 
-.questionItemStatsGrid {
+.answerItemContent {
+  margin-left: 15px !important;
+}
+
+.answerTime {
+  float: left;
+  margin-top: 15px;
+}
+
+.answerItemStatsGrid {
   width: 150px;
   margin-left: 0;
   margin-top: -5px !important;
 }
 
-.questionItemStatsGridRow {
+.answerItemStatsGridRow {
   padding-bottom: 0 !important;
   padding-top: 0 !important;
 }
 
-.questionItemStatsNum {
+.answerItemStatsNum {
   font-weight: bold;
 }
 
-.questionItemAskerGroup {
+.answerItemAskerGroup {
   float: right;
 }
 
-.questionItemLabels {
+.answerItemLabels {
   float: left;
 }
 
-.questionItemStatsGridRowDiv {
+.answerItemStatsGridRowDiv {
   text-align: center;
   padding-left: 0 !important;
 }
