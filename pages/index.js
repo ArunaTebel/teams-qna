@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../components/layout/QnAMainLayoutComponent";
 import QnAHomePageComponent from "../components/qna/QnAHomePageComponent";
 import C from "../components/util/consts";
-import fetch from 'isomorphic-unfetch';
 import QnAHttp from "../components/util/QnAHttp";
 
 export default class ArchQnAIndexComponent extends Component {
