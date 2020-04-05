@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {Button, Card, Header, Icon, Image, Segment} from "semantic-ui-react";
+import Utils from './../util/utils'
+import C from "../util/consts";
 
 class QnAHomePageComponent extends Component {
 
@@ -14,11 +16,11 @@ class QnAHomePageComponent extends Component {
                         <Image
                             floated='right'
                             size='mini'
-                            src={`https://react.semantic-ui.com/images/avatar/small/${team.avatar}.jpg`}
+                            src={`/img/test-data/${team.avatar}.jpg`}
                         />
                         <Card.Header>{team.name}</Card.Header>
-                        <Card.Meta>{`${team.users.length} Users`}</Card.Meta>
-                        <Card.Description>{team.description}</Card.Description>
+                        <Card.Meta>{`${team.user_count} Users`}</Card.Meta>
+                        <Card.Description>{Utils.strEllipsis(team.description, C.team.description_max_len)}</Card.Description>
                     </Card.Content>
                     <Card.Content extra>
                         <Button basic color='green' href={`/teams/${team.id}`}>

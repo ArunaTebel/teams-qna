@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Icon, Image, Card} from 'semantic-ui-react'
+import Utils from "../util/utils";
 
 export default class QnATeamDescriptionCardComponent extends Component {
     state = {};
@@ -12,15 +13,12 @@ export default class QnATeamDescriptionCardComponent extends Component {
                 <Card.Content>
                     <Card.Header>{team.name}</Card.Header>
                     <Card.Meta>
-                        <span>Joined: {team.created_at.split('T')[0]}</span>
+                        <span>Joined: {Utils.getDateFromUTCTimeStr(team.created_at)}</span>
                     </Card.Meta>
                     <Card.Description>{team.description}</Card.Description>
                 </Card.Content>
                 <Card.Content extra>
-                    <a>
-                        <Icon name='user'/>
-                        {team.users.length} Users
-                    </a>
+                    <a><Icon name='user'/>{team.user_count} User(s)</a>
                 </Card.Content>
             </Card>
         );

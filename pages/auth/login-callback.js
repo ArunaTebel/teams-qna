@@ -7,9 +7,9 @@ export default class ArchQnALoginCallbackComponent extends Component {
     state = {};
 
     async componentDidMount() {
-        fetch(`/api/setAccessTokenCookie?code=${this.props.code}`).then(async r => {
+        fetch(`/api/setAccessTokenCookie?code=${this.props.code}`).then(r => {
             if (r.status === 200) {
-                await Router.push('/');
+                window.location = '/';
             }
         });
     }

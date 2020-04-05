@@ -1,17 +1,15 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../components/layout/QnAMainLayoutComponent";
 import QnAHomePageComponent from "../components/qna/QnAHomePageComponent";
-import C from "../components/util/consts";
-import QnAHttp from "../components/util/QnAHttp";
+import ArchQnaApiService from "./api/utils/archQnaApiService";
 
 export default class ArchQnAIndexComponent extends Component {
 
     state = {};
 
     static async getInitialProps(ctx) {
-        const responses = await QnAHttp.getBatch([C.API_BASE + '/teams']);
         return {
-            teams: await responses[0].json(),
+            teams: await ArchQnaApiService.listTeams(ctx.req),
         };
     }
 

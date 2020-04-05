@@ -28,8 +28,8 @@ export default class ArchQnALoginCallbackComponent extends Component {
 
     componentDidMount() {
         if (this.props.revokeTokenResponseStatus === 200) {
-            fetch('/api/removeAccessTokenCookie').then(async r => {
-                await Router.push('/');
+            fetch('/api/removeAccessTokenCookie').then(r => {
+                window.location = '/';
             });
         }
     }

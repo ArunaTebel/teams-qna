@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Item} from 'semantic-ui-react'
 import styles from './styles/QnAQuestionComponent.module.scss'
 import C from './../util/consts'
+import Utils from './../util/utils'
 import QnAQuestionTagsComponent from "./QnAQuestionTagsComponent";
 import QnAQuestionStatsComponent from "./QnAQuestionStatsComponent";
 import QnAUserDetailsComponent from "./QnAUserDetailsComponent";
@@ -14,7 +15,7 @@ export default class QnAQuestionComponent extends Component {
         const team = this.props.team;
         const detailed = this.props.detailed;
         const questionUrl = !detailed ? `/teams/${team.id}/questions/${question.id}` : '';
-        const content = detailed ? question.content : question.content.length > C.question.content_max_len ? `${question.content.substring(0, C.question.content_max_len)}...` : question.content;
+        const content = detailed ? question.content : Utils.strEllipsis(question.content, C.question.content_max_len);
         const questionTimeStr = `Asked on ${question.created_at.split('T')[0]} at ${question.created_at.split('T')[1].split('Z')[0]}`
         return (
 
