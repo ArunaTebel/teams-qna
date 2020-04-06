@@ -1,11 +1,11 @@
 import cookieUtils from "./utils/cookies";
-import ArchQnaApiService from './utils/archQnaApiService'
 import C from "./utils/consts";
+import API from "../../components/util/API";
 
 export default async (req, res) => {
 
     const accessToken = cookieUtils.extractAccessToken(req);
-    let userResponseData = await ArchQnaApiService.fetchUser(req);
+    let userResponseData = await API.fetchUser(req);
 
     const oAuthConfig = {
         oAuthBaseUrl: `${C.API_BASE}/o/authorize`,

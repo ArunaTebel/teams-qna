@@ -6,13 +6,13 @@ export default class QnAAnswerStatsComponent extends Component {
 
     render() {
 
-        const answerStats = this.props.answerStats;
+        const answer = this.props.answer;
 
         return (
             <Grid className={styles.answerStatsGrid}>
                 <Grid.Row className={styles.answerStatsGridRow}>
                     <Grid.Column className={styles.answerStatsGridRowDiv}>
-                        <div className={styles.answerStatsNum}>{answerStats.votes}</div>
+                        <div className={styles.answerStatsNum}>{answer.up_votes - answer.down_votes}</div>
                         <small>Votes</small>
                     </Grid.Column>
                 </Grid.Row>

@@ -9,9 +9,8 @@ export default class QnARecentActivityListComponent extends Component {
     state = {activityLogs: []};
 
     async componentDidMount() {
-        const activityLogsResponses = await QnAHttp.getBatch([C.API_BASE + '/activity-logs']);
         this.setState({
-            activityLogs: await activityLogsResponses[0].json()
+            activityLogs: []
         });
     }
 

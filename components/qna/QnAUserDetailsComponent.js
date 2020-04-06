@@ -13,7 +13,7 @@ export default class QnAUserDetailsComponent extends Component {
                 <Comment>
                     <Comment.Avatar as='a' src={`/img/test-data/${user.avatar}.jpg`}/>
                     <Comment.Content>
-                        <Comment.Author>{user.name}</Comment.Author>
+                        <Comment.Author>{user.full_name}</Comment.Author>
                         <Comment.Metadata>
                             <Icon name='star'/>{user.rating}
                         </Comment.Metadata>

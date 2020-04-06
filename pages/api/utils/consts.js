@@ -1,6 +1,7 @@
 export default {
     "API_BASE": 'http://127.0.0.1:8000',
     "API_BASE_API_PATH": 'api',
+    "API_PATH": 'http://127.0.0.1:8000/api',
     "API_BASE_AUTH_PATH": 'auth',
     "OAUTH": {
         "grant_type": "authorization_code",

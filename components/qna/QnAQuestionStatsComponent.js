@@ -6,25 +6,25 @@ export default class QnAQuestionStatsComponent extends Component {
 
     render() {
 
-        const questionStats = this.props.questionStats;
+        const question = this.props.question;
 
         return (
             <Grid className={styles.questionStatsGrid}>
                 <Grid.Row className={styles.questionStatsGridRow}>
                     <Grid.Column className={styles.questionStatsGridRowDiv}>
-                        <div className={styles.questionStatsNum}>{questionStats.votes}</div>
+                        <div className={styles.questionStatsNum}>{question.up_votes}</div>
                         <small>Votes</small>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className={styles.questionStatsGridRow}>
                     <Grid.Column className={styles.questionStatsGridRowDiv}>
-                        <div className={styles.questionStatsNum}>{questionStats.answers}</div>
+                        <div className={styles.questionStatsNum}>{question.answer_count}</div>
                         <small>Answers</small>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className={styles.questionStatsGridRow}>
                     <Grid.Column className={styles.questionStatsGridRowDiv}>
-                        <div className={styles.questionStatsNum}>{questionStats.views}</div>
+                        <div className={styles.questionStatsNum}>{question.views}</div>
                         <small>Views</small>
                     </Grid.Column>
                 </Grid.Row>

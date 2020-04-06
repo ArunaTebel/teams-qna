@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../components/layout/QnAMainLayoutComponent";
 import QnATeamHomePageComponent from "../../components/qna/QnATeamHomePageComponent";
 import {withRouter} from 'next/router';
-import ArchQnaApiService from "../api/utils/archQnaApiService";
+import API from "../../components/util/API";
 
 class ArchQnATeamPageComponent extends Component {
 
@@ -10,7 +10,7 @@ class ArchQnATeamPageComponent extends Component {
 
     static async getInitialProps(ctx) {
         return {
-            team: await ArchQnaApiService.getTeam(ctx.req, ctx.query.id),
+            team: await API.fetchTeam(ctx.req, ctx.query.id),
         };
     }
 

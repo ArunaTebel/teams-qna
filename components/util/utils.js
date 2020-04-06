@@ -5,6 +5,6 @@ export default {
     },
 
     getDateFromUTCTimeStr(utcTimeStr) {
-        return utcTimeStr.split('T')[0];
+        return utcTimeStr ? utcTimeStr.split('T')[0] : '';
     }
 }

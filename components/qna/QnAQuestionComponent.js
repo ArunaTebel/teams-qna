@@ -16,11 +16,11 @@ export default class QnAQuestionComponent extends Component {
         const detailed = this.props.detailed;
         const questionUrl = !detailed ? `/teams/${team.id}/questions/${question.id}` : '';
         const content = detailed ? question.content : Utils.strEllipsis(question.content, C.question.content_max_len);
-        const questionTimeStr = `Asked on ${question.created_at.split('T')[0]} at ${question.created_at.split('T')[1].split('Z')[0]}`
+        const questionTimeStr = `Asked on ${Utils.getDateFromUTCTimeStr(question.created_at)}`;
         return (
 
             <Item className={detailed ? '' : styles.questionItem}>
-                <QnAQuestionStatsComponent questionStats={question.stats}/>
+                <QnAQuestionStatsComponent question={question}/>
                 <Item.Content className={detailed ? styles.questionItemContent : ''}>
                     <Item.Header as='a' href={questionUrl}>
                         {question.name}
@@ -34,7 +34,7 @@ export default class QnAQuestionComponent extends Component {
                     </Item.Description>
                     <Item.Extra>
                         <QnAQuestionTagsComponent tags={question.tags}/>
-                        <QnAUserDetailsComponent user={question.asked_by}/>
+                        <QnAUserDetailsComponent user={question.owner}/>
                     </Item.Extra>
 
                 </Item.Content>

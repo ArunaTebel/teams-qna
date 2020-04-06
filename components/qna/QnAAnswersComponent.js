@@ -5,17 +5,18 @@ import C from "../util/consts";
 import QnAAnswerComponent from "./QnAAnswerComponent";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import styles from './styles/QnAAnswersComponent.module.scss'
+import fetch from "isomorphic-unfetch";
+import API from "../util/API";
 
 export default class QnAAnswersComponent extends Component {
 
-    state = {answers: []};
+    state = {answers: [], loading: true};
 
     async componentDidMount() {
-        const responses = await QnAHttp.getBatch([C.API_BASE + '/answers']);
-        let answers = await responses[0].json();
-        answers = answers.filter(answer => parseInt(answer.question_id, 10) === parseInt((10 * Math.random()).toFixed(0), 10));
+        const answers = await API.fetchQuestionAnswers(false, this.props.questionId);
         this.setState({
             answers: answers,
+            loading: false
         });
     }
 
@@ -23,7 +24,7 @@ export default class QnAAnswersComponent extends Component {
 
         let answerComponents;
 
-        if (this.state.answers.length > 0) {
+        if (!this.state.loading) {
             answerComponents = this.state.answers.map((answer, idx) => {
                 return (
                     <QnAAnswerComponent key={idx} answer={answer}/>

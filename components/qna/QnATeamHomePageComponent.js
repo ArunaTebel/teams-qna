@@ -4,19 +4,17 @@ import QnAQuestionListQuestionComponent from "./QnAQuestionListQuestionComponent
 import QnATeamDescriptionCardComponent from "./QnATeamDescriptionCardComponent";
 import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
-import C from "../util/consts";
-import fetch from "isomorphic-unfetch";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
-import QnAHttp from "../util/QnAHttp";
+import API from "../util/API";
 
 class QnATeamHomePageComponent extends Component {
 
     state = {questions: [], activityLogs: []};
 
     async componentDidMount() {
-        const responses = await QnAHttp.getBatch([C.API_BASE + '/questions']);
+        const questions = await API.fetchTeamQuestions(false, this.props.team.id);
         this.setState({
-            questions: await responses[0].json(),
+            questions: questions,
         });
     }
 

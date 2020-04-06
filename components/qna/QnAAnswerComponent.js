@@ -15,7 +15,7 @@ export default class QnAAnswerComponent extends Component {
         return (
 
             <Item>
-                <QnAAnswerStatsComponent answerStats={answer.stats}/>
+                <QnAAnswerStatsComponent answer={answer}/>
                 <Item.Content className={styles.answerItemContent}>
                     <Item.Description>
                         {content}
@@ -24,9 +24,9 @@ export default class QnAAnswerComponent extends Component {
                         <span className={styles.answerTime}>{answerTimeStr}</span>
                     </Item.Meta>
                     <Item.Extra>
-                        <QnAUserDetailsComponent user={answer.asked_by}/>
+                        <QnAUserDetailsComponent user={answer.owner}/>
                     </Item.Extra>
-                    <QnACommentsComponent collapsed={true} comments={answer.comments}/>
+                    <QnACommentsComponent collapsed={true} answerId={answer.id}/>
 
                 </Item.Content>
             </Item>

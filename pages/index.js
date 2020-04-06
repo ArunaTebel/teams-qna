@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../components/layout/QnAMainLayoutComponent";
 import QnAHomePageComponent from "../components/qna/QnAHomePageComponent";
-import ArchQnaApiService from "./api/utils/archQnaApiService";
+import API from "../components/util/API";
 
 export default class ArchQnAIndexComponent extends Component {
 
@@ -9,7 +9,7 @@ export default class ArchQnAIndexComponent extends Component {
 
     static async getInitialProps(ctx) {
         return {
-            teams: await ArchQnaApiService.listTeams(ctx.req),
+            teams: await API.fetchMyTeams(ctx.req),
         };
     }
 
