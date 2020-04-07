@@ -15,12 +15,15 @@
     "cookie": "^0.4.0",
     "isomorphic-form-data": "^2.0.0",
     "isomorphic-unfetch": "^3.0.0",
+    "lodash": "^4.17.15",
     "next": "^9.3.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-toastify": "^5.5.0",
     "sass": "^1.26.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
-    "swr": "^0.1.18"
+    "swr": "^0.1.18",
+    "validate.js": "^0.13.1"
   }
 }

@@ -1,11 +1,8 @@
 import React, {Component} from 'react'
 import {Button, Header, Item} from 'semantic-ui-react'
-import QnAHttp from "../util/QnAHttp";
-import C from "../util/consts";
 import QnAAnswerComponent from "./QnAAnswerComponent";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import styles from './styles/QnAAnswersComponent.module.scss'
-import fetch from "isomorphic-unfetch";
 import API from "../util/API";
 
 export default class QnAAnswersComponent extends Component {

@@ -1,6 +1,7 @@
 import fetch from "isomorphic-unfetch";
 import C from "./consts";
 import cookieUtils from "./cookies";
+import httpUtil from "../../../components/util/httpUtil";
 
 /**
  * Returns the Authorization header populated with the bearer access token
@@ -8,23 +9,61 @@ import cookieUtils from "./cookies";
  * @param nextReq
  * @returns {{Authorization: string}}
  */
-function getAuthorizedHeaders(nextReq) {
-    return {'Authorization': 'Bearer ' + cookieUtils.extractAccessToken(nextReq)}
+function getAuthorizationHeader(nextReq) {
+    return 'Bearer ' + cookieUtils.extractAccessToken(nextReq)
 }
 
 /**
- * Performs an HTTP request to the given url using the options given
+ * Performs a GET request to the given url using the options given
  *
  * @param url
  * @param nextReq
- * @param method
  * @param options
  * @returns {Promise<Response>}
  */
-async function doApiRequest(url, nextReq, method = 'GET', options = {}) {
-    options['method'] = method;
-    options['headers'] = getAuthorizedHeaders(nextReq);
-    return await fetch(url, options);
+async function doGet(url, nextReq, options = {}) {
+    options['method'] = 'GET';
+    if (!options.headers) {
+        options.headers = {};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await httpUtil.get(url, options);
+}
+
+/**
+ * Performs a POST request to the given url using the options given
+ *
+ * @param url
+ * @param data
+ * @param nextReq
+ * @param options
+ * @returns {Promise<Response>}
+ */
+async function doPost(url, data, nextReq, options = {}) {
+    options['method'] = 'POST';
+    if (!options.headers) {
+        options.headers = {'Content-Type': 'application/json'};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await httpUtil.post(url, data, options);
+}
+
+/**
+ * Performs a PUT request to the given url using the options given
+ *
+ * @param url
+ * @param data
+ * @param nextReq
+ * @param options
+ * @returns {Promise<Response>}
+ */
+async function doPut(url, data, nextReq, options = {}) {
+    options['method'] = 'PUT';
+    if (!options.headers) {
+        options.headers = {'Content-Type': 'application/json'};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await httpUtil.put(url, data, options);
 }
 
 /**
@@ -33,8 +72,9 @@ async function doApiRequest(url, nextReq, method = 'GET', options = {}) {
  *
  * @param error
  */
-function handleApiError(error) {
+async function handleApiError(error) {
     console.log('error', error);
+    return error;
 }
 
 /**
@@ -50,7 +90,7 @@ async function respondIfAuthorized(r, unAuthorizedResponse = {}, type = 'json') 
     if (type === 'json') {
         response = await r.json();
     }
-    if (r.status === 403) {
+    if (r.status === 401) {
         response = unAuthorizedResponse;
     }
     return response;
@@ -65,9 +105,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchUser: async (req) => {
-        return await doApiRequest(`${C.API_BASE}/${C.API_BASE_AUTH_PATH}/current-user`, req).then(async r => {
+        return await doGet(`${C.API_BASE}/${C.API_BASE_AUTH_PATH}/current-user`, req).then(async r => {
             return await respondIfAuthorized(r);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -77,9 +117,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchMyTeams: async (req) => {
-        return await doApiRequest(`${C.API_PATH}/teams/my-teams/`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/teams/my-teams/`, req).then(async r => {
             return await respondIfAuthorized(r, []);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -90,9 +130,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchTeam: async (req, teamId) => {
-        return await doApiRequest(`${C.API_PATH}/teams/${teamId}`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}`, req).then(async r => {
             return await respondIfAuthorized(r);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -103,9 +143,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchTeamQuestions: async (req, teamId) => {
-        return await doApiRequest(`${C.API_PATH}/teams/${teamId}/questions/`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/questions/`, req).then(async r => {
             return await respondIfAuthorized(r, []);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -116,9 +156,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchQuestionAnswers: async (req, questionId) => {
-        return await doApiRequest(`${C.API_PATH}/questions/${questionId}/answers/`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/answers/`, req).then(async r => {
             return await respondIfAuthorized(r, []);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -129,9 +169,9 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchQuestion: async (req, questionId) => {
-        return await doApiRequest(`${C.API_PATH}/questions/${questionId}`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}`, req).then(async r => {
             return await respondIfAuthorized(r);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -142,9 +182,50 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchQuestionComments: async (req, questionId) => {
-        return await doApiRequest(`${C.API_PATH}/questions/${questionId}/comments/`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/comments/`, req).then(async r => {
             return await respondIfAuthorized(r);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Adds a new comment to the given question
+     *
+     * @param req
+     * @param questionId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    addQuestionComment: async (req, questionId, commentData) => {
+        return await doPost(`${C.API_PATH}/question-comments/`, commentData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the question comment having the id
+     *
+     * @param req
+     * @param questionCommentId
+     * @returns {Promise<*|void>}
+     */
+    fetchQuestionComment: async (req, questionCommentId) => {
+        return await doGet(`${C.API_PATH}/question-comments/${questionCommentId}/`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Updates the question comment having the id
+     *
+     * @param req
+     * @param questionCommentId
+     * @param commentData
+     * @returns {Promise<any>}
+     */
+    updateQuestionComment: async (req, questionCommentId, commentData) => {
+        return await doPut(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
     },
 
     /**
@@ -155,8 +236,8 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchAnswerComments: async (req, answerId) => {
-        return await doApiRequest(`${C.API_PATH}/answers/${answerId}/comments/`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/answers/${answerId}/comments/`, req).then(async r => {
             return await respondIfAuthorized(r);
-        }).catch(error => handleApiError(error));
+        }).catch(async error => await handleApiError(error));
     },
 }

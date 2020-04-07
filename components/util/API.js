@@ -1,5 +1,6 @@
 import fetch from "isomorphic-unfetch";
 import ArchQnaApiService from "../../pages/api/utils/archQnaApiService";
+import http from "./httpUtil";
 
 export default {
 
@@ -14,9 +15,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchUser(req);
         } else {
-            response = await fetch(`/auth/current_user`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/auth/current_user`)).json();
         }
         return response;
     },
@@ -32,9 +31,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchMyTeams(req);
         } else {
-            response = await fetch(`/api/teams/my_teams`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/teams/my_teams`)).json();
         }
         return response;
     },
@@ -51,9 +48,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchTeam(req, teamId);
         } else {
-            response = await fetch(`/api/teams/${teamId}`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/teams/${teamId}`)).json();
         }
         return response;
     },
@@ -70,9 +65,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchTeamQuestions(req, teamId);
         } else {
-            response = await fetch(`/api/teams/${teamId}/questions/list`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/teams/${teamId}/questions/list`)).json();
         }
         return response;
     },
@@ -89,9 +82,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchQuestion(req, questionId);
         } else {
-            response = await fetch(`/api/questions/${questionId}`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/questions/${questionId}`)).json();
         }
         return response;
     },
@@ -108,9 +99,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchQuestionAnswers(req, questionId);
         } else {
-            response = await fetch(`/api/questions/${questionId}/answers/list`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/questions/${questionId}/answers/list`)).json();
         }
         return response;
     },
@@ -127,9 +116,24 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchQuestionComments(req, questionId);
         } else {
-            response = await fetch(`/api/questions/${questionId}/comments/list`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/questions/${questionId}/comments/list`)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Fetches the question comment having the id
+     *
+     * @param req
+     * @param questionCommentId
+     * @returns {Promise<*|void>}
+     */
+    fetchQuestionComment: async (req, questionCommentId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.fetchQuestionComment(req, questionCommentId);
+        } else {
+            response = await (await http.get(`/api/question_comments/${questionCommentId}/get/`)).json();
         }
         return response;
     },
@@ -146,10 +150,44 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchAnswerComments(req, answerId);
         } else {
-            response = await fetch(`/api/answers/${answerId}/comments/list`).then(async r => {
-                return await r.json();
-            });
+            response = await (await http.get(`/api/answers/${answerId}/comments/list`)).json();
         }
         return response;
     },
+
+    /**
+     * Adds a new comment to the given question
+     *
+     * @param req
+     * @param questionId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    addQuestionComment: async (req, questionId, commentData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.addQuestionComment(req, questionId, commentData);
+        } else {
+            response = await (await http.post(`/api/questions/${questionId}/comments/add`, commentData)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Updates the comment of the given question
+     *
+     * @param req
+     * @param questionCommentId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    updateQuestionComment: async (req, questionCommentId, commentData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.updateQuestionComment(req, questionCommentId, commentData);
+        } else {
+            response = await (await http.put(`/api/question_comments/${questionCommentId}/update/`, commentData)).json();
+        }
+        return response;
+    }
 }

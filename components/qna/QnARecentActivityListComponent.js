@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
 import {Card, Feed} from 'semantic-ui-react'
 import styles from './styles/QnARecentActivityListComponent.module.scss'
-import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
-import QnAHttp from './../util/QnAHttp';
 
 export default class QnARecentActivityListComponent extends Component {
     state = {activityLogs: []};
