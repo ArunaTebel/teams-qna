@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {Grid, Item, Divider, Button, Label, Icon} from 'semantic-ui-react'
-import QnAQuestionListQuestionComponent from "./QnAQuestionListQuestionComponent";
 import QnATeamDescriptionCardComponent from "./QnATeamDescriptionCardComponent";
 import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
+import QnAQuestionComponent from "./QnAQuestionComponent";
 
 class QnATeamHomePageComponent extends Component {
 
@@ -30,7 +30,7 @@ class QnATeamHomePageComponent extends Component {
         } else {
 
             const questionListItems = this.state.questions.map(question => {
-                return <QnAQuestionListQuestionComponent key={question.id} question={question} team={this.props.team}/>
+                return <QnAQuestionComponent key={question.id} question={question} team={this.props.team}/>
             });
 
             questionList = <Grid.Column width={9}>

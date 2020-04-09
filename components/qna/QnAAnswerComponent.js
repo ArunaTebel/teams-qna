@@ -3,7 +3,7 @@ import {Item} from 'semantic-ui-react'
 import styles from './styles/QnAAnswerComponent.module.scss'
 import QnAUserDetailsComponent from "./QnAUserDetailsComponent";
 import QnAAnswerStatsComponent from "./QnAAnswerStatsComponent";
-import QnACommentsComponent from "./QnACommentsComponent";
+import QnACommentListComponent from "./QnACommentListComponent";
 
 export default class QnAAnswerComponent extends Component {
 
@@ -26,7 +26,7 @@ export default class QnAAnswerComponent extends Component {
                     <Item.Extra>
                         <QnAUserDetailsComponent user={answer.owner}/>
                     </Item.Extra>
-                    <QnACommentsComponent collapsed={true} answerId={answer.id}/>
+                    <QnACommentListComponent collapsed={true} answerId={answer.id}/>
 
                 </Item.Content>
             </Item>

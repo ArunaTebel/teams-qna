@@ -3,14 +3,14 @@ import {Button, Comment, Form, Header, Icon} from 'semantic-ui-react'
 import _ from 'lodash'
 import API from "../util/API";
 import Utils from "../util/utils";
-import styles from './styles/QnACommentsComponent.module.scss'
+import styles from './styles/QnACommentListComponent.module.scss'
 import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 
-export default class QnACommentsComponent extends Component {
+export default class QnACommentListComponent extends Component {
 
-    formConfig = C.components.QnACommentsComponent.formConfig;
+    formConfig = C.components.QnACommentListComponent.formConfig;
 
     state = {
         commentListLoading: true,
@@ -212,7 +212,8 @@ export default class QnACommentsComponent extends Component {
                 )
             }
         } else {
-            this.stateUtil.setFormErrors(validationErrors)
+            this.stateUtil.setFormErrors(validationErrors);
+            this.stateUtil.setIsCommentFormBusy(false);
         }
     }
 

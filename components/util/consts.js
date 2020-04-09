@@ -10,7 +10,7 @@ export default {
         error: "Error occurred",
     },
     components: {
-        QnACommentsComponent: {
+        QnACommentListComponent: {
             formConfig: {
                 modes: {add: 'add', edit: 'edit'},
                 fields: {commentId: {name: 'commentId'}, comment: {name: 'comment'}},

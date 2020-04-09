@@ -4,7 +4,7 @@ import {withRouter} from 'next/router';
 import QnAQuestionComponent from "../../../../components/qna/QnAQuestionComponent";
 import {Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
-import QnACommentsComponent from "../../../../components/qna/QnACommentsComponent";
+import QnACommentListComponent from "../../../../components/qna/QnACommentListComponent";
 import QnAAnswersComponent from "../../../../components/qna/QnAAnswersComponent";
 import API from "../../../../components/util/API";
 
@@ -30,7 +30,7 @@ class ArchQnAQuestionPageComponent extends Component {
                                     <Grid.Row>
                                         <Grid.Column width={1}/>
                                         <Grid.Column width={14}>
-                                            <QnACommentsComponent questionId={this.props.question.id} collapsed={false}/>
+                                            <QnACommentListComponent questionId={this.props.question.id} collapsed={false}/>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
