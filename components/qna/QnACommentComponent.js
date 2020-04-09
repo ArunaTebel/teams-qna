@@ -36,6 +36,16 @@ export default class QnACommentComponent extends Component {
 
     render() {
         const comment = this.props.comment;
+
+        let commentEditAction = '';
+        let commentDeleteAction = '';
+        if (comment.can_update) {
+            commentEditAction = <Comment.Action onClick={() => this.props.onEditClick(comment.id)}>Edit</Comment.Action>;
+        }
+        if (comment.can_delete) {
+            commentDeleteAction = <Comment.Action onClick={this.onDeleteClickHandler}>Delete</Comment.Action>;
+        }
+
         return (
             <Comment key={comment.id}>
 
@@ -55,8 +65,8 @@ export default class QnACommentComponent extends Component {
                     </Comment.Metadata>
                     <Comment.Text>{comment.content}</Comment.Text>
                     <Comment.Actions>
-                        <Comment.Action onClick={() => this.props.onEditClick(comment.id)}>Edit</Comment.Action>
-                        <Comment.Action onClick={this.onDeleteClickHandler}>Delete</Comment.Action>
+                        {commentEditAction}
+                        {commentDeleteAction}
                     </Comment.Actions>
                 </Comment.Content>
             </Comment>
