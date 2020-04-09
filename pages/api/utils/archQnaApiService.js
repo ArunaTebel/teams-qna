@@ -67,6 +67,23 @@ async function doPut(url, data, nextReq, options = {}) {
 }
 
 /**
+ * Performs a DELETE request to the given url using the options given
+ *
+ * @param url
+ * @param nextReq
+ * @param options
+ * @returns {Promise<Response>}
+ */
+async function doDelete(url, nextReq, options = {}) {
+    options['method'] = 'DELETE';
+    if (!options.headers) {
+        options.headers = {'Content-Type': 'application/json'};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await httpUtil.delete(url, options);
+}
+
+/**
  * Handles and mitigate the errors in the HTTP request
  * TODO: Implement this function to properly log the errors
  *
@@ -87,10 +104,17 @@ async function handleApiError(error) {
  */
 async function respondIfAuthorized(r, unAuthorizedResponse = {}, type = 'json') {
     let response = {};
+    const status = r.status;
+
     if (type === 'json') {
-        response = await r.json();
+        if (status === 204) {
+            response = r;
+        } else {
+            response = await r.json();
+        }
     }
-    if (r.status === 401) {
+
+    if (status === 401) {
         response = unAuthorizedResponse;
     }
     return response;
@@ -224,6 +248,19 @@ export default {
      */
     updateQuestionComment: async (req, questionCommentId, commentData) => {
         return await doPut(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Deletes the question comment by the given id
+     *
+     * @param req
+     * @param questionCommentId
+     * @returns {Promise<*|void>}
+     */
+    deleteQuestionComment: async (req, questionCommentId) => {
+        return await doDelete(`${C.API_PATH}/question-comments/${questionCommentId}/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },

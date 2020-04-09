@@ -104,6 +104,23 @@ export default {
     },
 
     /**
+     * Fetches the comments of the given answer
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    fetchAnswerComments: async (req, answerId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.fetchAnswerComments(req, answerId);
+        } else {
+            response = await (await http.get(`/api/answers/${answerId}/comments/list`)).json();
+        }
+        return response;
+    },
+
+    /**
      * Fetches the comments of the given question
      *
      * @param req
@@ -133,23 +150,6 @@ export default {
             response = await ArchQnaApiService.fetchQuestionComment(req, questionCommentId);
         } else {
             response = await (await http.get(`/api/question_comments/${questionCommentId}/get/`)).json();
-        }
-        return response;
-    },
-
-    /**
-     * Fetches the comments of the given answer
-     *
-     * @param req
-     * @param answerId
-     * @returns {Promise<*|void>}
-     */
-    fetchAnswerComments: async (req, answerId) => {
-        let response;
-        if (req) {
-            response = await ArchQnaApiService.fetchAnswerComments(req, answerId);
-        } else {
-            response = await (await http.get(`/api/answers/${answerId}/comments/list`)).json();
         }
         return response;
     },
@@ -188,5 +188,26 @@ export default {
             response = await (await http.put(`/api/question_comments/${questionCommentId}/update/`, commentData)).json();
         }
         return response;
+    },
+
+    /**
+     * Deletes the question comment by the given id
+     *
+     * @param req
+     * @param questionCommentId
+     * @returns {Promise<*|void>}
+     */
+    deleteQuestionComment: async (req, questionCommentId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.deleteQuestionComment(req, questionCommentId);
+        } else {
+            response = await http.delete(`/api/question_comments/${questionCommentId}/delete/`);
+        }
+        if (response.status === 204) {
+            return questionCommentId;
+        } else {
+            return response.status;
+        }
     }
 }

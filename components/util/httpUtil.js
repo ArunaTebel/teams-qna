@@ -15,4 +15,9 @@ export default {
         init.method = 'PUT';
         return await fetch(url, init);
     },
+
+    delete: async (url, init = {}) => {
+        init.method = 'DELETE';
+        return await fetch(url, init);
+    },
 }

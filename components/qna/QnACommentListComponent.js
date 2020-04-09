@@ -39,6 +39,7 @@ export default class QnACommentListComponent extends Component {
         this.isQuestionComment = this.isQuestionComment.bind(this);
         this.onReceiveSaveCommentResponse = this.onReceiveSaveCommentResponse.bind(this);
         this.initEditCommentForm = this.initEditCommentForm.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
         this.isACommentObj = this.isACommentObj.bind(this);
         this.addComment = this.addComment.bind(this);
         this.updateComment = this.updateComment.bind(this);
@@ -145,6 +146,14 @@ export default class QnACommentListComponent extends Component {
                 nextState.commentFormBusy = isCommentFormBusy;
                 return nextState;
             });
+        },
+
+        removeCommentById(commentId) {
+            this.setState((prevState) => {
+                const nextState = prevState;
+                nextState.comments.splice(_.findIndex(nextState.comments, {id: commentId}), 1);
+                return nextState;
+            });
         }
     };
 
@@ -187,6 +196,20 @@ export default class QnACommentListComponent extends Component {
             }
         }
         this.stateUtil.setIsCommentFormBusy(false);
+        loader.hide();
+    }
+
+    async deleteComment(commentId) {
+        loader.show();
+        if (this.isQuestionComment()) {
+            let deletedCommentId = await API.deleteQuestionComment(false, commentId);
+            if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
+                Utils.toasts.showToast(C.messages.success);
+                this.stateUtil.removeCommentById(commentId);
+            } else {
+                Utils.toasts.showToast(C.messages.error, 'error');
+            }
+        }
         loader.hide();
     }
 
@@ -259,7 +282,12 @@ export default class QnACommentListComponent extends Component {
         if (this.stateUtil.isCommentListLoading()) {
             comments = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            comments = this.state.comments.map((comment) => <QnACommentComponent key={comment.id} comment={comment} onEditClick={this.initEditCommentForm}/>);
+            comments = this.state.comments.map((comment) => <QnACommentComponent
+                key={comment.id}
+                comment={comment}
+                onEditClick={this.initEditCommentForm}
+                onDeleteClick={this.deleteComment}/>
+            );
         }
 
         return (

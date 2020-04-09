@@ -20,5 +20,11 @@ export default {
                 toast(message);
             }
         }
+    },
+
+    strings: {
+        numStrComp(a, b) {
+            return parseInt(a, 10) === parseInt(b, 10);
+        }
     }
 }

@@ -9,7 +9,6 @@ export default class EventEmitter {
     static subscribe(event, callback) {
         if (!this.events[event]) this.events[event] = [];
         this.events[event].push(callback);
-        console.log(this.events);
     }
 
 }
