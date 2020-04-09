@@ -26,7 +26,6 @@ export default class QnACommentListComponent extends Component {
             },
             errors: {}
         },
-        validatableFormConfig: {commentForm: {errors: this.initialCommentFormErrors}}
     };
 
     constructor(props) {
