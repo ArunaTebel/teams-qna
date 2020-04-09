@@ -1,4 +1,3 @@
-import fetch from "isomorphic-unfetch";
 import ArchQnaApiService from "../../pages/api/utils/archQnaApiService";
 import http from "./httpUtil";
 

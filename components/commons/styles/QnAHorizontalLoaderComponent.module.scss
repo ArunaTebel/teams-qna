@@ -1,0 +1,10 @@
+.progressBar {
+  position: absolute;
+  top: 7%;
+  width: 100%;
+  left: 0;
+}
+
+.progressBar > .ui.progress .bar {
+  border-radius: 0 !important;
+}

@@ -8,6 +8,7 @@ import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentComponent from "./QnACommentComponent";
+import loader from "../util/loader";
 
 export default class QnACommentListComponent extends Component {
 
@@ -174,6 +175,7 @@ export default class QnACommentListComponent extends Component {
     }
 
     async initEditCommentForm(commentId) {
+        loader.show();
         this.stateUtil.setIsCommentFormBusy(true);
         let comment;
         if (this.isQuestionComment()) {
@@ -186,6 +188,7 @@ export default class QnACommentListComponent extends Component {
             }
         }
         this.stateUtil.setIsCommentFormBusy(false);
+        loader.hide();
     }
 
     onCommentChange(e) {
@@ -257,7 +260,7 @@ export default class QnACommentListComponent extends Component {
         if (this.stateUtil.isCommentListLoading()) {
             comments = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            comments = this.state.comments.map((comment) => <QnACommentComponent comment={comment} onEditClick={this.initEditCommentForm}/>);
+            comments = this.state.comments.map((comment) => <QnACommentComponent key={comment.id} comment={comment} onEditClick={this.initEditCommentForm}/>);
         }
 
         return (

@@ -10,6 +10,11 @@ export default {
         error: "Error occurred",
     },
     components: {
+
+        QnAHorizontalLoaderComponent: {
+            events: {loading: 'qna-horizontal-loader-loading'}
+        },
+
         QnACommentListComponent: {
             formConfig: {
                 modes: {add: 'add', edit: 'edit'},
