@@ -7,6 +7,7 @@ import styles from './styles/QnACommentListComponent.module.scss'
 import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
+import QnACommentComponent from "./QnACommentComponent";
 
 export default class QnACommentListComponent extends Component {
 
@@ -34,7 +35,6 @@ export default class QnACommentListComponent extends Component {
 
         this.onCommentChange = this.onCommentChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.getCommentFormValidationRules = this.getCommentFormValidationRules.bind(this);
         this.onFormChange = this.onFormChange.bind(this);
         this.isQuestionComment = this.isQuestionComment.bind(this);
         this.onReceiveSaveCommentResponse = this.onReceiveSaveCommentResponse.bind(this);
@@ -248,20 +248,6 @@ export default class QnACommentListComponent extends Component {
         this.stateUtil.setIsCommentFormBusy(false);
     }
 
-    getCommentFormValidationRules() {
-        return {
-            [this.formConfig.fields.comment.name]: {
-                presence: true,
-                length: {
-                    minimum: 15,
-                    maximum: 500,
-                    tooShort: "should at least have %{count} characters",
-                    tooLong: "should not exceed %{count} characters",
-                }
-            }
-        };
-    }
-
     render() {
 
         const formMode = this.stateUtil.getCommentFormMode();
@@ -271,24 +257,7 @@ export default class QnACommentListComponent extends Component {
         if (this.stateUtil.isCommentListLoading()) {
             comments = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            comments = this.state.comments.map((comment) => {
-                return (
-                    <Comment key={comment.id}>
-                        <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg'/>
-                        <Comment.Content>
-                            <Comment.Author as='a'>{comment.owner.full_name}</Comment.Author>
-                            <Comment.Metadata>
-                                <div>{Utils.getDateFromUTCTimeStr(comment.created_at)}</div>
-                            </Comment.Metadata>
-                            <Comment.Text>{comment.content}</Comment.Text>
-                            <Comment.Actions>
-                                <Comment.Action onClick={() => this.initEditCommentForm(comment.id)}>Edit</Comment.Action>
-                                <Comment.Action>Delete</Comment.Action>
-                            </Comment.Actions>
-                        </Comment.Content>
-                    </Comment>
-                );
-            });
+            comments = this.state.comments.map((comment) => <QnACommentComponent comment={comment} onEditClick={this.initEditCommentForm}/>);
         }
 
         return (
@@ -300,7 +269,7 @@ export default class QnACommentListComponent extends Component {
                     <QnAValidatableFormComponent
                         onChange={this.onFormChange}
                         onSubmit={this.onFormSubmit}
-                        validationRules={this.getCommentFormValidationRules()}
+                        validationRules={this.formConfig.validationRules}
                         formData={this.stateUtil.getFormFieldValue(this.formConfig.fields.comment.name)}>
                         <Form.TextArea
                             name={this.formConfig.fields.comment.name}

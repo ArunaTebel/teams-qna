@@ -23,6 +23,17 @@ export default {
                 textAreaContainer: {
                     add: {class: 'commentTextareaContainer'},
                     edit: {class: 'commentTextareaContainerFocused'},
+                },
+                validationRules: {
+                    comment: {
+                        presence: true,
+                        length: {
+                            minimum: 15,
+                            maximum: 500,
+                            tooShort: "should at least have %{count} characters",
+                            tooLong: "should not exceed %{count} characters",
+                        }
+                    }
                 }
             }
         }
