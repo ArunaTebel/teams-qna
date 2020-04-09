@@ -206,8 +206,6 @@ export default {
         }
         if (response.status === 204) {
             return questionCommentId;
-        } else {
-            return response.status;
         }
     }
 }
