@@ -41,11 +41,9 @@ class QnATeamHomePageComponent extends Component {
                         </Grid.Column>
                         <Grid.Column width={10}>
                             <div className={styles.questionListSearchBtnPanel}>
-                                <Button as='div' labelPosition='right' size='mini'>
-                                    <Button color='blue' size='mini'>Newest</Button>
-                                    <Label as='a' basic color='blue' pointing='left'>
-                                        2,048
-                                    </Label>
+                                <Button as='div' icon primary labelPosition='left' size='mini'>
+                                    <Icon name='lightbulb' />
+                                    Ask a Question
                                 </Button>
                                 <Button as='div' labelPosition='right' size='mini'>
                                     <Button basic color='green' size='mini'>Active</Button>
