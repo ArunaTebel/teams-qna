@@ -16,30 +16,14 @@ class QnAValidatableFormComponent extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (JSON.stringify(this.props.formData) !== JSON.stringify(prevProps.formData) && this.props.formData !== '') {
+        if (this.props.formStateFlag !== prevProps.formStateFlag) {
             this.validateForm();
         }
     }
 
-    extractValidatableFormElementValues(rules, formElements) {
-        const validatableFormValues = {};
-        _.each(rules, (rule, elemName) => {
-            if (formElements[elemName]) {
-                validatableFormValues[elemName] = formElements[elemName].value;
-            }
-        });
-        return validatableFormValues;
-    }
-
     validateForm(submit = false) {
         const rules = this.props.validationRules;
-        const formElements = {};
-
-        _.each(this.props.children, (childElem) => {
-            formElements[childElem.props.name] = {value: childElem.props.value};
-        });
-
-        const validatableFormValues = this.extractValidatableFormElementValues(rules, formElements);
+        const validatableFormValues = this.props.formData;
         const parentHandler = submit ? this.props.onSubmit : this.props.onChange;
         const validationErrors = this.validate(validatableFormValues, rules);
         if (typeof parentHandler === 'function') {

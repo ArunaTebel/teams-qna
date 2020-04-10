@@ -53,6 +53,23 @@ export default {
     },
 
     /**
+     * Fetches the list of tags, of the given team
+     *
+     * @param req
+     * @param teamId
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamTags: async (req, teamId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.fetchTeamTags(req, teamId);
+        } else {
+            response = await (await http.get(`/api/teams/${teamId}/tags/list`)).json();
+        }
+        return response;
+    },
+
+    /**
      * Fetches the questions in the given team
      *
      * @param req
@@ -82,6 +99,24 @@ export default {
             response = await ArchQnaApiService.fetchQuestion(req, questionId);
         } else {
             response = await (await http.get(`/api/questions/${questionId}`)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Updates the the given question
+     *
+     * @param req
+     * @param questionId
+     * @param questionData
+     * @returns {Promise<*|void>}
+     */
+    updateQuestion: async (req, questionId, questionData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.updateQuestion(req, questionId, questionData);
+        } else {
+            response = await (await http.put(`/api/questions/${questionId}/update/`, questionData)).json();
         }
         return response;
     },

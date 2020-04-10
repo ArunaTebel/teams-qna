@@ -41,6 +41,55 @@ export default {
                     }
                 }
             }
+        },
+
+        QnAQuestionComponent: {
+            modes: {edit: 'edit', view: 'view'},
+            formConfig: {
+                modes: {add: 'add', edit: 'edit'},
+                fields: {
+                    id: {name: 'id', label: 'Id'},
+                    title: {name: 'title', label: 'Title'},
+                    subTitle: {name: 'subTitle', label: 'Sub Title'},
+                    content: {name: 'content', label: 'Content'},
+                    tags: {name: 'tags', label: 'Tags'}
+                },
+                button: {
+                    save: {
+                        add: {label: 'Save', color: 'green', icon: 'right arrow'},
+                        edit: {label: 'Update', color: 'blue', icon: 'edit'}
+                    },
+                },
+                validationRules: {
+                    title: {
+                        presence: true,
+                        length: {
+                            minimum: 15,
+                            maximum: 300,
+                            tooShort: "should at least have %{count} characters",
+                            tooLong: "should not exceed %{count} characters",
+                        }
+                    },
+                    subTitle: {
+                        presence: false,
+                        length: {
+                            minimum: 5,
+                            maximum: 250,
+                            tooShort: "should at least have %{count} characters",
+                            tooLong: "should not exceed %{count} characters",
+                        }
+                    },
+                    content: {
+                        presence: true,
+                        length: {
+                            minimum: 50,
+                            maximum: 65000,
+                            tooShort: "should at least have %{count} characters",
+                            tooLong: "should not exceed %{count} characters",
+                        }
+                    },
+                }
+            }
         }
     }
 }

@@ -173,6 +173,19 @@ export default {
     },
 
     /**
+     * Fetches the tags in the given team
+     *
+     * @param req
+     * @param teamId
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamTags: async (req, teamId) => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/tags/`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the answers of the given question
      *
      * @param req
@@ -194,6 +207,20 @@ export default {
      */
     fetchQuestion: async (req, questionId) => {
         return await doGet(`${C.API_PATH}/questions/${questionId}`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Updates the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @param questionData
+     * @returns {Promise<any>}
+     */
+    updateQuestion: async (req, questionId, questionData) => {
+        return await doPut(`${C.API_PATH}/questions/${questionId}/`, questionData, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
