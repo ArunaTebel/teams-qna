@@ -24,7 +24,8 @@ export default class QnACommentListComponent extends Component {
                 [this.formConfig.fields.commentId.name]: '',
                 [this.formConfig.fields.comment.name]: '',
             },
-            errors: {}
+            errors: {},
+            stateFlag: undefined
         },
     };
 
@@ -56,16 +57,20 @@ export default class QnACommentListComponent extends Component {
 
     stateUtil = {
 
-        get: (key) => {
-            return this.state[key];
+        getFormStateFlag: () => {
+            return this.state.commentForm.stateFlag;
         },
 
-        set: (key, value) => {
+        setFormStateFlag: (formStateFlag) => {
             this.setState((prevState) => {
                 const nextState = prevState;
-                nextState[key] = value;
+                nextState.commentForm.stateFlag = formStateFlag;
                 return nextState;
             });
+        },
+
+        getFormValues: () => {
+            return this.state.commentForm.values;
         },
 
         getFormFieldValue: (fieldName) => {
@@ -219,6 +224,7 @@ export default class QnACommentListComponent extends Component {
             this.stateUtil.setFormFieldErrors(this.formConfig.fields.comment.name, false);
         }
         this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, comment);
+        this.stateUtil.setFormStateFlag(!this.stateUtil.getFormStateFlag());
     }
 
     onFormChange(validationErrors) {
@@ -300,7 +306,9 @@ export default class QnACommentListComponent extends Component {
                         onChange={this.onFormChange}
                         onSubmit={this.onFormSubmit}
                         validationRules={this.formConfig.validationRules}
-                        formData={this.stateUtil.getFormFieldValue(this.formConfig.fields.comment.name)}>
+                        formData={this.stateUtil.getFormValues()}
+                        formStateFlag={this.stateUtil.getFormStateFlag()}
+                        noValidateOnMount>
                         <Form.TextArea
                             name={this.formConfig.fields.comment.name}
                             onChange={this.onCommentChange}

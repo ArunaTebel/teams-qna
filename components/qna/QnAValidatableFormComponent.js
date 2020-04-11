@@ -10,7 +10,7 @@ class QnAValidatableFormComponent extends Component {
     }
 
     componentDidMount() {
-        if (this.props.formData !== '') {
+        if (this.props.formData !== '' && !this.props.noValidateOnMount) {
             this.validateForm();
         }
     }
