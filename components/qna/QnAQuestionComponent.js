@@ -10,6 +10,7 @@ import QnAQuestionComponentStateUtil from "./stateutils/QnAQuestionComponentStat
 import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import _ from "lodash";
 import API from "../util/API";
+import toasts from "../util/toasts";
 
 export default class QnAQuestionComponent extends Component {
 
@@ -65,7 +66,12 @@ export default class QnAQuestionComponent extends Component {
         this.stateUtil.setIsFormBusy(this, true);
         if (_.isEmpty(validationErrors)) {
             if (this.stateUtil.isEditMode(this)) {
-                const result = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
+                const updateQuestion = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
+                if (updateQuestion && updateQuestion.id) {
+                    this.stateUtil.setToViewMode(this);
+                    await this.props.onUpdate();
+                    toasts.showToast(C.messages.updateSuccess);
+                }
             } else {
                 //TODO: Make add question API request
             }
@@ -92,20 +98,20 @@ export default class QnAQuestionComponent extends Component {
 
         let questionStats = <QnAQuestionStatsComponent question={question}/>;
 
-        let questionName = <Item.Header as='a' href={questionUrl}>
+        let questionName = <Item.Header key={'q_name'} as='a' href={questionUrl}>
             {question.name}
         </Item.Header>;
 
-        let questionSubTitle = <Item.Meta>
+        let questionSubTitle = <Item.Meta key={'q_sub_title'}>
             <span>{question.sub_title}</span>
             <span className={styles.questionTime}>{questionTimeStr}</span>
         </Item.Meta>;
 
         let userDetails = <QnAUserDetailsComponent user={question.owner}/>;
 
-        let questionContent = <Item.Description>{content}</Item.Description>;
+        let questionContent = <Item.Description key={'q_content'}>{content}</Item.Description>;
 
-        let questionTags = <QnAQuestionTagsComponent tags={question.tags}/>;
+        let questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={question.tags}/>;
 
         if (isEditMode) {
             questionStats = '';

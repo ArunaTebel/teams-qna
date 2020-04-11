@@ -7,6 +7,9 @@ export default {
     },
     messages: {
         success: "Success",
+        addSuccess: "Successfully Added!",
+        updateSuccess: "Successfully Updated!",
+        deleteSuccess: "Successfully Deleted!",
         error: "Error occurred",
     },
     components: {

@@ -98,7 +98,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchQuestion(req, questionId);
         } else {
-            response = await (await http.get(`/api/questions/${questionId}`)).json();
+            response = await (await http.get(`/api/questions/${questionId}/get/`)).json();
         }
         return response;
     },

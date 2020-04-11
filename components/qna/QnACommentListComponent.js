@@ -9,6 +9,7 @@ import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentComponent from "./QnACommentComponent";
 import loader from "../util/loader";
+import toasts from "../util/toasts";
 
 export default class QnACommentListComponent extends Component {
 
@@ -209,10 +210,10 @@ export default class QnACommentListComponent extends Component {
         if (this.isQuestionComment()) {
             let deletedCommentId = await API.deleteQuestionComment(false, commentId);
             if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
-                Utils.toasts.showToast(C.messages.success);
+                toasts.showToast(C.messages.deleteSuccess);
                 this.stateUtil.removeCommentById(commentId);
             } else {
-                Utils.toasts.showToast(C.messages.error, 'error');
+                toasts.showToast(C.messages.error, 'error');
             }
         }
         loader.hide();
@@ -268,13 +269,14 @@ export default class QnACommentListComponent extends Component {
             this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, '');
             if (this.isCommentFormAddMode()) {
                 this.stateUtil.pushNewComment(savedComment);
+                toasts.showToast(C.messages.addSuccess);
             } else {
                 this.stateUtil.replaceComment(savedComment);
                 this.stateUtil.setCommentFormMode(this.formConfig.modes.add);
+                toasts.showToast(C.messages.updateSuccess);
             }
-            Utils.toasts.showToast(C.messages.success);
         } else {
-            Utils.toasts.showToast(C.messages.error, 'error');
+            toasts.showToast(C.messages.error, 'error');
         }
         this.stateUtil.setIsCommentFormBusy(false);
     }

@@ -10,34 +10,58 @@ import API from "../../../../components/util/API";
 
 class ArchQnAQuestionPageComponent extends Component {
 
-    state = {};
+    state = {
+        question: {}
+    };
+
+    constructor(props) {
+        super(props);
+        this.onUpdate = this.onUpdate.bind(this);
+        this.fetchQuestion = this.fetchQuestion.bind(this);
+    }
 
     static async getInitialProps(ctx) {
         return {
-            question: await API.fetchQuestion(ctx.req, ctx.query.qid),
+            questionId: ctx.query.qid,
         };
     }
 
+    async componentDidMount() {
+        this.setState({question: await this.fetchQuestion()})
+    }
+
+    async fetchQuestion() {
+        return await API.fetchQuestion(false, this.props.questionId);
+    }
+
+    async onUpdate() {
+        this.setState({question: await this.fetchQuestion()})
+    }
+
     render() {
+        const question = this.state.question;
+        if (!question.id) {
+            return '';
+        }
         return (
             <QnAMainLayoutComponent>
                 <Grid celled='internally'>
                     <Grid.Row>
                         <Grid.Column width={12}>
                             <Item.Group divided>
-                                <QnAQuestionComponent question={this.props.question} detailed={true}/>
+                                <QnAQuestionComponent question={question} detailed={true} onUpdate={this.onUpdate}/>
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={1}/>
                                         <Grid.Column width={14}>
-                                            <QnACommentListComponent questionId={this.props.question.id} collapsed={false}/>
+                                            <QnACommentListComponent questionId={question.id} collapsed={false}/>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={16}>
-                                            <QnAAnswersComponent questionId={this.props.question.id}/>
+                                            <QnAAnswersComponent questionId={question.id}/>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
