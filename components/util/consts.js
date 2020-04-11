@@ -49,8 +49,8 @@ export default {
                 modes: {add: 'add', edit: 'edit'},
                 fields: {
                     id: {name: 'id', label: 'Id'},
-                    title: {name: 'title', label: 'Title'},
-                    subTitle: {name: 'subTitle', label: 'Sub Title'},
+                    name: {name: 'name', label: 'Title'},
+                    sub_title: {name: 'sub_title', label: 'Sub Title'},
                     content: {name: 'content', label: 'Content'},
                     tags: {name: 'tags', label: 'Tags'}
                 },
@@ -61,7 +61,7 @@ export default {
                     },
                 },
                 validationRules: {
-                    title: {
+                    name: {
                         presence: true,
                         length: {
                             minimum: 15,
@@ -70,7 +70,7 @@ export default {
                             tooLong: "should not exceed %{count} characters",
                         }
                     },
-                    subTitle: {
+                    sub_title: {
                         presence: false,
                         length: {
                             minimum: 5,

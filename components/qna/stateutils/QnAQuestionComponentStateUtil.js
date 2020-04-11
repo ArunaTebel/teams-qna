@@ -59,8 +59,8 @@ export default class QnAQuestionComponentStateUtil {
             nextState.mode = this.compConfig.modes.edit;
             if (comp.props.question && comp.props.question.id) {
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.id.name] = comp.props.question.id;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.title.name] = comp.props.question.name;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.subTitle.name] = comp.props.question.sub_title;
+                nextState.questionEditForm.values[this.compConfig.formConfig.fields.name.name] = comp.props.question.name;
+                nextState.questionEditForm.values[this.compConfig.formConfig.fields.sub_title.name] = comp.props.question.sub_title;
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.content.name] = comp.props.question.content;
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.tags.name] = _.map(comp.props.question.tags, (tag) => tag.id);
             }

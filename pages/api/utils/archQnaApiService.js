@@ -1,7 +1,6 @@
-import fetch from "isomorphic-unfetch";
 import C from "./consts";
 import cookieUtils from "./cookies";
-import httpUtil from "../../../components/util/httpUtil";
+import http from "../../../components/util/httpUtil";
 
 /**
  * Returns the Authorization header populated with the bearer access token
@@ -27,7 +26,7 @@ async function doGet(url, nextReq, options = {}) {
         options.headers = {};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.get(url, options);
+    return await http.get(url, options);
 }
 
 /**
@@ -45,7 +44,7 @@ async function doPost(url, data, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.post(url, data, options);
+    return await http.post(url, data, options);
 }
 
 /**
@@ -63,7 +62,25 @@ async function doPut(url, data, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.put(url, data, options);
+    return await http.put(url, data, options);
+}
+
+/**
+ * Performs a PATCH request to the given url using the options given
+ *
+ * @param url
+ * @param data
+ * @param nextReq
+ * @param options
+ * @returns {Promise<Response>}
+ */
+async function doPatch(url, data, nextReq, options = {}) {
+    options['method'] = 'PATCH';
+    if (!options.headers) {
+        options.headers = {'Content-Type': 'application/json'};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await http.patch(url, data, options);
 }
 
 /**
@@ -80,7 +97,7 @@ async function doDelete(url, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.delete(url, options);
+    return await http.delete(url, options);
 }
 
 /**
@@ -220,7 +237,7 @@ export default {
      * @returns {Promise<any>}
      */
     updateQuestion: async (req, questionId, questionData) => {
-        return await doPut(`${C.API_PATH}/questions/${questionId}/`, questionData, req).then(async r => {
+        return await doPatch(`${C.API_PATH}/questions/${questionId}/`, questionData, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -274,7 +291,7 @@ export default {
      * @returns {Promise<any>}
      */
     updateQuestionComment: async (req, questionCommentId, commentData) => {
-        return await doPut(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
+        return await doPatch(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },

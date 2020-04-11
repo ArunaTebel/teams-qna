@@ -22,8 +22,8 @@ export default class QnAQuestionComponent extends Component {
         questionEditForm: {
             mode: this.componentConfig.modes.add,
             values: {
-                [this.formConfig.fields.title.name]: '',
-                [this.formConfig.fields.subTitle.name]: '',
+                [this.formConfig.fields.name.name]: '',
+                [this.formConfig.fields.sub_title.name]: '',
                 [this.formConfig.fields.content.name]: '',
                 [this.formConfig.fields.tags.name]: [],
             },
@@ -66,7 +66,6 @@ export default class QnAQuestionComponent extends Component {
         if (_.isEmpty(validationErrors)) {
             if (this.stateUtil.isEditMode(this)) {
                 const result = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
-                console.log(result);
             } else {
                 //TODO: Make add question API request
             }
@@ -118,10 +117,10 @@ export default class QnAQuestionComponent extends Component {
                 label='Title'
                 className={styles.questionNameInput}
                 size={'large'}
-                name={this.formConfig.fields.title.name}
+                name={this.formConfig.fields.name.name}
                 onChange={this.onFormFieldChange}
-                value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.title.name)}
-                error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.title.name)}
+                value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.name.name)}
+                error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.name.name)}
             />;
         }
 
@@ -132,10 +131,10 @@ export default class QnAQuestionComponent extends Component {
                     label='Sub Title'
                     className={styles.questionSubTitleInput}
                     size={'small'}
-                    name={this.formConfig.fields.subTitle.name}
+                    name={this.formConfig.fields.sub_title.name}
                     onChange={this.onFormFieldChange}
-                    value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.subTitle.name)}
-                    error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.subTitle.name)}
+                    value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.sub_title.name)}
+                    error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.sub_title.name)}
                 />
             </Item.Meta>;
         }

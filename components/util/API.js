@@ -116,7 +116,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.updateQuestion(req, questionId, questionData);
         } else {
-            response = await (await http.put(`/api/questions/${questionId}/update/`, questionData)).json();
+            response = await (await http.patch(`/api/questions/${questionId}/update/`, questionData)).json();
         }
         return response;
     },
@@ -220,7 +220,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.updateQuestionComment(req, questionCommentId, commentData);
         } else {
-            response = await (await http.put(`/api/question_comments/${questionCommentId}/update/`, commentData)).json();
+            response = await (await http.patch(`/api/question_comments/${questionCommentId}/update/`, commentData)).json();
         }
         return response;
     },
