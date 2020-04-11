@@ -256,6 +256,19 @@ export default {
     },
 
     /**
+     * Deletes the question by the given id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    deleteQuestion: async (req, questionId) => {
+        return await doDelete(`${C.API_PATH}/questions/${questionId}/`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the comments of the given question
      *
      * @param req

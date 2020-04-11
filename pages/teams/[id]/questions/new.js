@@ -5,6 +5,8 @@ import C from "../../../../components/util/consts";
 import {Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
 import Router from "next/router";
+import Utils from "../../../../components/util/utils";
+import toasts from "../../../../components/util/toasts";
 
 export default class QnATeamNewQuestionPageComponent extends Component {
 
@@ -22,12 +24,13 @@ export default class QnATeamNewQuestionPageComponent extends Component {
 
     onCreateCallback(questionId) {
         if (questionId) {
-            Router.push(`/teams/${this.props.teamId}/questions/${questionId}`);
+            toasts.showToast(C.messages.addSuccess);
+            Utils.redirectAfterMills(`/teams/${this.props.teamId}/questions/${questionId}`, 1000);
         }
     }
 
     onQuestionEditCancelCallback() {
-        Router.push(`/teams/${this.props.teamId}`)
+        Router.push(`/teams/${this.props.teamId}`);
     }
 
     render() {

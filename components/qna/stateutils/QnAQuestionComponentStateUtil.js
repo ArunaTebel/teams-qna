@@ -107,4 +107,20 @@ export default class QnAQuestionComponentStateUtil {
     getFormValues(comp) {
         return comp.state.questionEditForm.values;
     }
+
+    closeDeleteQuestionModal(comp) {
+        comp.setState((prevState) => {
+            const nextState = prevState;
+            nextState.deleteQuestionModal.open = false;
+            return nextState;
+        });
+    }
+
+    openDeleteQuestionModal(comp) {
+        comp.setState((prevState) => {
+            const nextState = prevState;
+            nextState.deleteQuestionModal.open = true;
+            return nextState;
+        });
+    }
 }

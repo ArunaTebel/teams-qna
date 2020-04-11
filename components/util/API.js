@@ -139,6 +139,25 @@ export default {
     },
 
     /**
+     * Deletes the question by the given id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    deleteQuestion: async (req, questionId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.deleteQuestion(req, questionId);
+        } else {
+            response = await http.delete(`/api/questions/${questionId}/delete`);
+        }
+        if (response.status === 204) {
+            return questionId;
+        }
+    },
+
+    /**
      * Fetches the answers of the given question
      *
      * @param req

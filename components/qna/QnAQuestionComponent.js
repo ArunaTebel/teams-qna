@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Comment, Divider, Dropdown, Form, Input, Item, Label, TextArea} from 'semantic-ui-react'
+import {Button, Comment, Confirm, Divider, Dropdown, Form, Input, Item, TextArea} from 'semantic-ui-react'
 import styles from './styles/QnAQuestionComponent.module.scss'
 import C from './../util/consts'
 import Utils from './../util/utils'
@@ -11,6 +11,8 @@ import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import _ from "lodash";
 import API from "../util/API";
 import toasts from "../util/toasts";
+import Router from "next/router";
+import loader from "../util/loader";
 
 export default class QnAQuestionComponent extends Component {
 
@@ -20,6 +22,7 @@ export default class QnAQuestionComponent extends Component {
 
     state = {
         mode: this.props.mode ? this.props.mode : this.componentConfig.modes.view,
+        deleteQuestionModal: {open: false},
         questionEditForm: {
             values: {
                 [this.formConfig.fields.name.name]: '',
@@ -44,6 +47,7 @@ export default class QnAQuestionComponent extends Component {
         this.initFormData = this.initFormData.bind(this);
         this.fetchQuestionTagsFormChoices = this.fetchQuestionTagsFormChoices.bind(this);
         this.onQuestionEditCancel = this.onQuestionEditCancel.bind(this);
+        this.deleteQuestion = this.deleteQuestion.bind(this);
         this.initFormData().then();
     }
 
@@ -60,6 +64,21 @@ export default class QnAQuestionComponent extends Component {
 
     onFormChange(validationErrors) {
         this.stateUtil.setFormErrors(this, validationErrors)
+    }
+
+    async deleteQuestion() {
+        const questionId = this.props.question.id;
+        if (questionId) {
+            this.stateUtil.closeDeleteQuestionModal(this);
+            let deletedQuestionId = await API.deleteQuestion(false, questionId);
+            if (Utils.strings.numStrComp(questionId, deletedQuestionId)) {
+                toasts.showToast(C.messages.deleteSuccess);
+            } else {
+                toasts.showToast(C.messages.error, 'error');
+            }
+            loader.hide();
+            Utils.redirectAfterMills(`/teams/${this.props.question.team}`, 1000);
+        }
     }
 
     async onFormSubmit(validationErrors) {
@@ -173,7 +192,7 @@ export default class QnAQuestionComponent extends Component {
                 <Item.Extra>
                     <div hidden={!(isFormEditable)} className={styles.formButtonGroup}>
                         <Button.Group>
-                            <Button onClick={this.onQuestionEditCancel}>Cancel</Button>
+                            <Button type={'button'} onClick={this.onQuestionEditCancel}>Cancel</Button>
                             <Button.Or/>
                             <Button loading={isCommentFormBusy} disabled={isCommentFormBusy} positive>Save</Button>
                         </Button.Group>
@@ -183,7 +202,8 @@ export default class QnAQuestionComponent extends Component {
         }
 
         let questionEditAction = question.can_update ? <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action> : '';
-        let questionDeleteAction = question.can_delete ? <Comment.Action>Delete</Comment.Action> : '';
+        let questionDeleteAction = question.can_delete ?
+            <Comment.Action onClick={() => this.stateUtil.openDeleteQuestionModal(this)}>Delete</Comment.Action> : '';
 
         return (
             <Item className={detailed ? '' : styles.questionItem}>
@@ -204,6 +224,13 @@ export default class QnAQuestionComponent extends Component {
                         </Comment>
                     </Comment.Group>
                 </Item.Content>
+                <Confirm
+                    content='Delete the question?'
+                    open={this.state.deleteQuestionModal.open}
+                    onCancel={() => this.stateUtil.closeDeleteQuestionModal(this)}
+                    onConfirm={this.deleteQuestion}
+                    size='mini'
+                />
             </Item>
         );
     }
