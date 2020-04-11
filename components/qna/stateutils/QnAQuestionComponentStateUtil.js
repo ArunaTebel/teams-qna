@@ -62,7 +62,7 @@ export default class QnAQuestionComponentStateUtil {
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.name.name] = comp.props.question.name;
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.sub_title.name] = comp.props.question.sub_title;
                 nextState.questionEditForm.values[this.compConfig.formConfig.fields.content.name] = comp.props.question.content;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.tags.name] = _.map(comp.props.question.tags, (tag) => tag.id);
+                nextState.questionEditForm.values[this.compConfig.formConfig.fields.tags.name] = _.map(comp.props.question.tag_details, (tag) => tag.id);
             }
             return nextState;
         });
@@ -96,8 +96,11 @@ export default class QnAQuestionComponentStateUtil {
         });
     }
 
+    getIsFormBusy(comp) {
+        return comp.state.questionEditForm.isBusy;
+    }
+
     getFormValues(comp) {
         return comp.state.questionEditForm.values;
     }
-
 }

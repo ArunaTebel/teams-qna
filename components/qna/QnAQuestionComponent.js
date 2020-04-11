@@ -71,10 +71,13 @@ export default class QnAQuestionComponent extends Component {
                     this.stateUtil.setToViewMode(this);
                     await this.props.onUpdate();
                     toasts.showToast(C.messages.updateSuccess);
+                } else {
+                    toasts.showToast(C.messages.error, 'error');
                 }
             } else {
                 //TODO: Make add question API request
             }
+            this.stateUtil.setIsFormBusy(this, false);
         } else {
             this.stateUtil.setFormErrors(this, validationErrors);
             this.stateUtil.setIsFormBusy(this, false);
@@ -95,6 +98,7 @@ export default class QnAQuestionComponent extends Component {
         const content = detailed ? question.content : Utils.strEllipsis(question.content, C.question.content_max_len);
         const questionTimeStr = `Asked on ${Utils.getDateFromUTCTimeStr(question.created_at)}`;
         const isEditMode = this.stateUtil.isEditMode(this);
+        const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
 
         let questionStats = <QnAQuestionStatsComponent question={question}/>;
 
@@ -111,7 +115,7 @@ export default class QnAQuestionComponent extends Component {
 
         let questionContent = <Item.Description key={'q_content'}>{content}</Item.Description>;
 
-        let questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={question.tags}/>;
+        let questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={question.tag_details}/>;
 
         if (isEditMode) {
             questionStats = '';
@@ -180,7 +184,7 @@ export default class QnAQuestionComponent extends Component {
 
         let editableComponents = [questionName, questionSubTitle, questionContent, questionTags];
 
-        if (isEditMode) {
+        if (isEditMode && question.can_update) {
             editableComponents = <QnAValidatableFormComponent
                 onChange={this.onFormChange}
                 onSubmit={this.onFormSubmit}
@@ -198,11 +202,21 @@ export default class QnAQuestionComponent extends Component {
                         <Button.Group>
                             <Button onClick={() => this.stateUtil.setToViewMode(this)}>Cancel</Button>
                             <Button.Or/>
-                            <Button positive>Save</Button>
+                            <Button loading={isCommentFormBusy} disabled={isCommentFormBusy} positive>Save</Button>
                         </Button.Group>
                     </div>
                 </Item.Extra>
             </QnAValidatableFormComponent>
+        }
+
+        let questionEditAction = '';
+        let questionDeleteAction = '';
+
+        if (question.can_update) {
+            questionEditAction = <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action>;
+        }
+        if (question.can_delete) {
+            questionDeleteAction = <Comment.Action>Delete</Comment.Action>;
         }
 
         return (
@@ -218,8 +232,8 @@ export default class QnAQuestionComponent extends Component {
                         <Comment>
                             <Comment.Content>
                                 <Comment.Actions>
-                                    <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action>
-                                    <Comment.Action>Delete</Comment.Action>
+                                    {questionEditAction}
+                                    {questionDeleteAction}
                                 </Comment.Actions>
                             </Comment.Content>
                         </Comment>

@@ -40,28 +40,39 @@ class ArchQnAQuestionPageComponent extends Component {
 
     render() {
         const question = this.state.question;
+        let questionComponent;
+        let commentListComponent;
+        let answersComponent;
+
         if (!question.id) {
-            return '';
+            questionComponent = <QnAFluidParagraphPlaceholderListComponent/>;
+            commentListComponent = <QnAFluidParagraphPlaceholderListComponent/>;
+            answersComponent = <QnAFluidParagraphPlaceholderListComponent/>;
+        } else {
+            questionComponent = <QnAQuestionComponent question={question} detailed={true} onUpdate={this.onUpdate}/>;
+            commentListComponent = <QnACommentListComponent questionId={question.id} collapsed={false}/>;
+            answersComponent = <QnAAnswersComponent questionId={question.id}/>;
         }
+
         return (
             <QnAMainLayoutComponent>
                 <Grid celled='internally'>
                     <Grid.Row>
                         <Grid.Column width={12}>
                             <Item.Group divided>
-                                <QnAQuestionComponent question={question} detailed={true} onUpdate={this.onUpdate}/>
+                                {questionComponent}
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={1}/>
                                         <Grid.Column width={14}>
-                                            <QnACommentListComponent questionId={question.id} collapsed={false}/>
+                                            {commentListComponent}
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={16}>
-                                            <QnAAnswersComponent questionId={question.id}/>
+                                            {answersComponent}
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
