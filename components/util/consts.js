@@ -47,9 +47,8 @@ export default {
         },
 
         QnAQuestionComponent: {
-            modes: {edit: 'edit', view: 'view'},
+            modes: {add: 'add', edit: 'edit', view: 'view'},
             formConfig: {
-                modes: {add: 'add', edit: 'edit'},
                 fields: {
                     id: {name: 'id', label: 'Id'},
                     name: {name: 'name', label: 'Title'},

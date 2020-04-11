@@ -122,6 +122,23 @@ export default {
     },
 
     /**
+     * Adds a new question
+     *
+     * @param req
+     * @param questionData
+     * @returns {Promise<*|void>}
+     */
+    addQuestion: async (req, questionData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.addQuestion(req, questionData);
+        } else {
+            response = await (await http.post(`/api/questions/add`, questionData)).json();
+        }
+        return response;
+    },
+
+    /**
      * Fetches the answers of the given question
      *
      * @param req

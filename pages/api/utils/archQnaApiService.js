@@ -229,6 +229,19 @@ export default {
     },
 
     /**
+     * Fetch the question by id
+     *
+     * @param req
+     * @param questionData
+     * @returns {Promise<*|void>}
+     */
+    addQuestion: async (req, questionData) => {
+        return await doPost(`${C.API_PATH}/questions/`, questionData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Updates the question having the id
      *
      * @param req

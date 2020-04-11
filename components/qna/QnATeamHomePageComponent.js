@@ -6,6 +6,7 @@ import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
 import QnAQuestionComponent from "./QnAQuestionComponent";
+import Router from 'next/router'
 
 class QnATeamHomePageComponent extends Component {
 
@@ -30,7 +31,7 @@ class QnATeamHomePageComponent extends Component {
         } else {
 
             const questionListItems = this.state.questions.map(question => {
-                return <QnAQuestionComponent key={question.id} question={question} team={this.props.team}/>
+                return <QnAQuestionComponent key={question.id} question={question} teamId={this.props.team.id}/>
             });
 
             questionList = <Grid.Column width={9}>
@@ -41,8 +42,8 @@ class QnATeamHomePageComponent extends Component {
                         </Grid.Column>
                         <Grid.Column width={10}>
                             <div className={styles.questionListSearchBtnPanel}>
-                                <Button as='div' icon primary labelPosition='left' size='mini'>
-                                    <Icon name='lightbulb' />
+                                <Button onClick={() => Router.push(`/teams/${this.props.team.id}/questions/new`)} as='div' icon primary labelPosition='left' size='mini'>
+                                    <Icon name='lightbulb'/>
                                     Ask a Question
                                 </Button>
                                 <Button as='div' labelPosition='right' size='mini'>

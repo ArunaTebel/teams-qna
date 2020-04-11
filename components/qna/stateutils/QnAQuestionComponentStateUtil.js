@@ -80,6 +80,10 @@ export default class QnAQuestionComponentStateUtil {
         return comp.state.mode === this.compConfig.modes.edit;
     }
 
+    isAddMode(comp) {
+        return comp.state.mode === this.compConfig.modes.add;
+    }
+
     setFormErrors(comp, errors) {
         comp.setState((prevState) => {
             const nextState = prevState;

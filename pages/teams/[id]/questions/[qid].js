@@ -49,7 +49,7 @@ class ArchQnAQuestionPageComponent extends Component {
             commentListComponent = <QnAFluidParagraphPlaceholderListComponent/>;
             answersComponent = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            questionComponent = <QnAQuestionComponent question={question} detailed={true} onUpdate={this.onUpdate}/>;
+            questionComponent = <QnAQuestionComponent question={question} detailed={true} onSaveCallback={this.onUpdate} teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id} collapsed={false}/>;
             answersComponent = <QnAAnswersComponent questionId={question.id}/>;
         }

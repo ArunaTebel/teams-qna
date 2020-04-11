@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Comment, Divider, Dropdown, Form, Input, Item, TextArea} from 'semantic-ui-react'
+import {Button, Comment, Divider, Dropdown, Form, Input, Item, Label, TextArea} from 'semantic-ui-react'
 import styles from './styles/QnAQuestionComponent.module.scss'
 import C from './../util/consts'
 import Utils from './../util/utils'
@@ -21,7 +21,6 @@ export default class QnAQuestionComponent extends Component {
     state = {
         mode: this.props.mode ? this.props.mode : this.componentConfig.modes.view,
         questionEditForm: {
-            mode: this.componentConfig.modes.add,
             values: {
                 [this.formConfig.fields.name.name]: '',
                 [this.formConfig.fields.sub_title.name]: '',
@@ -44,6 +43,7 @@ export default class QnAQuestionComponent extends Component {
         this.onFormFieldChange = this.onFormFieldChange.bind(this);
         this.initFormData = this.initFormData.bind(this);
         this.fetchQuestionTagsFormChoices = this.fetchQuestionTagsFormChoices.bind(this);
+        this.onQuestionEditCancel = this.onQuestionEditCancel.bind(this);
         this.initFormData().then();
     }
 
@@ -52,7 +52,7 @@ export default class QnAQuestionComponent extends Component {
     }
 
     async fetchQuestionTagsFormChoices() {
-        const teamTags = await API.fetchTeamTags(false, this.props.question.team.id);
+        const teamTags = await API.fetchTeamTags(false, this.props.teamId);
         return _.map(teamTags, (tag) => {
             return {key: tag.id, text: tag.name, value: tag.id}
         });
@@ -65,22 +65,28 @@ export default class QnAQuestionComponent extends Component {
     async onFormSubmit(validationErrors) {
         this.stateUtil.setIsFormBusy(this, true);
         if (_.isEmpty(validationErrors)) {
+            let savedQuestion;
             if (this.stateUtil.isEditMode(this)) {
-                const updateQuestion = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
-                if (updateQuestion && updateQuestion.id) {
-                    this.stateUtil.setToViewMode(this);
-                    await this.props.onUpdate();
-                    toasts.showToast(C.messages.updateSuccess);
-                } else {
-                    toasts.showToast(C.messages.error, 'error');
-                }
+                savedQuestion = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
             } else {
-                //TODO: Make add question API request
+                savedQuestion = await API.addQuestion(false, {...this.stateUtil.getFormValues(this), team: this.props.teamId});
             }
-            this.stateUtil.setIsFormBusy(this, false);
+            this.afterQuestionSave(savedQuestion);
         } else {
             this.stateUtil.setFormErrors(this, validationErrors);
-            this.stateUtil.setIsFormBusy(this, false);
+        }
+        this.stateUtil.setIsFormBusy(this, false);
+    }
+
+    async afterQuestionSave(savedQuestion) {
+        if (savedQuestion && savedQuestion.id) {
+            await this.props.onSaveCallback(savedQuestion.id);
+            if (this.stateUtil.isEditMode(this)) {
+                toasts.showToast(C.messages.updateSuccess);
+                this.stateUtil.setToViewMode(this);
+            }
+        } else {
+            toasts.showToast(C.messages.error, 'error');
         }
     }
 
@@ -89,118 +95,85 @@ export default class QnAQuestionComponent extends Component {
         this.stateUtil.setFormFieldValue(this, element.name, element.value);
     }
 
+    onQuestionEditCancel() {
+        if (this.props.onQuestionEditCancel) {
+            this.props.onQuestionEditCancel();
+        } else {
+            this.stateUtil.setToViewMode(this);
+        }
+    }
+
     render() {
 
-        const question = this.props.question;
-        const team = this.props.team;
+        const isAddMode = this.stateUtil.isAddMode(this);
+        const question = isAddMode ? {} : this.props.question;
         const detailed = this.props.detailed;
-        const questionUrl = !detailed ? `/teams/${team.id}/questions/${question.id}` : '';
+        const questionUrl = !detailed ? `/teams/${this.props.teamId}/questions/${question.id}` : '';
         const content = detailed ? question.content : Utils.strEllipsis(question.content, C.question.content_max_len);
         const questionTimeStr = `Asked on ${Utils.getDateFromUTCTimeStr(question.created_at)}`;
         const isEditMode = this.stateUtil.isEditMode(this);
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
+        const isFormEditable = (isEditMode && question.can_update) || isAddMode;
 
         let questionStats = <QnAQuestionStatsComponent question={question}/>;
-
-        let questionName = <Item.Header key={'q_name'} as='a' href={questionUrl}>
-            {question.name}
-        </Item.Header>;
-
-        let questionSubTitle = <Item.Meta key={'q_sub_title'}>
-            <span>{question.sub_title}</span>
-            <span className={styles.questionTime}>{questionTimeStr}</span>
-        </Item.Meta>;
-
+        let questionName = <Item.Header key={'q_name'} as='a' href={questionUrl}>{question.name}</Item.Header>;
+        let questionSubTitle = <Item.Meta key={'q_sub_title'}><span>{question.sub_title}</span><span
+            className={styles.questionTime}>{questionTimeStr}</span></Item.Meta>;
         let userDetails = <QnAUserDetailsComponent user={question.owner}/>;
-
         let questionContent = <Item.Description key={'q_content'}>{content}</Item.Description>;
-
         let questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={question.tag_details}/>;
 
-        if (isEditMode) {
+        let questionSubComponents = [questionName, questionSubTitle, questionContent, questionTags];
+
+        if (isFormEditable) {
             questionStats = '';
-        }
+            userDetails = '';
 
-        if (isEditMode) {
-            questionName = <Form.Field
-                control={Input}
-                label='Title'
-                className={styles.questionNameInput}
-                size={'large'}
-                name={this.formConfig.fields.name.name}
-                onChange={this.onFormFieldChange}
-                value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.name.name)}
-                error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.name.name)}
+            questionName = <Form.Field key={'q_name'} control={Input} label='Title' className={styles.questionNameInput} size={'small'}
+                                       name={this.formConfig.fields.name.name}
+                                       onChange={this.onFormFieldChange}
+                                       value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.name.name)}
+                                       error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.name.name)}
             />;
-        }
 
-        if (isEditMode) {
-            questionSubTitle = <Item.Meta>
-                <Form.Field
-                    control={Input}
-                    label='Sub Title'
-                    className={styles.questionSubTitleInput}
-                    size={'small'}
-                    name={this.formConfig.fields.sub_title.name}
-                    onChange={this.onFormFieldChange}
-                    value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.sub_title.name)}
-                    error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.sub_title.name)}
+            questionSubTitle = <Item.Meta key={'q_sub_title'}>
+                <Form.Field control={Input} label='Sub Title' className={styles.questionSubTitleInput} size={'small'}
+                            name={this.formConfig.fields.sub_title.name}
+                            onChange={this.onFormFieldChange}
+                            value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.sub_title.name)}
+                            error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.sub_title.name)}
                 />
             </Item.Meta>;
-        }
 
-        if (isEditMode) {
-            userDetails = '';
-        }
-
-        if (isEditMode) {
-            questionContent = <Item.Description>
+            questionContent = <Item.Description key={'q_content'}>
                 <Divider horizontal>Content</Divider>
-                <Form.Field
-                    control={TextArea}
-                    rows={12}
-                    name={this.formConfig.fields.content.name}
-                    onChange={this.onFormFieldChange}
-                    value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.content.name)}
-                    error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.content.name)}
+                <Form.Field control={TextArea} rows={12} name={this.formConfig.fields.content.name} onChange={this.onFormFieldChange}
+                            value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.content.name)}
+                            error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.content.name)}
                 />
             </Item.Description>;
-        }
 
-        if (isEditMode) {
-            questionTags = <Dropdown
-                placeholder={this.formConfig.fields.tags.label}
-                fluid
-                multiple
-                search
-                selection
-                name={this.formConfig.fields.tags.name}
-                onChange={this.onFormFieldChange}
-                value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.tags.name)}
-                error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.tags.name)}
-                options={this.stateUtil.getFormMeta(this, 'questionTags')}
-            />
-        }
+            questionTags = <Dropdown key={'q_tags_dropdown'} fluid multiple search selection onChange={this.onFormFieldChange}
+                                     placeholder={this.formConfig.fields.tags.label}
+                                     name={this.formConfig.fields.tags.name}
+                                     value={this.stateUtil.getFormFieldValue(this, this.formConfig.fields.tags.name)}
+                                     error={this.stateUtil.getFormFieldErrors(this, this.formConfig.fields.tags.name)}
+                                     options={this.stateUtil.getFormMeta(this, 'questionTags')}
+            />;
 
-        let editableComponents = [questionName, questionSubTitle, questionContent, questionTags];
-
-        if (isEditMode && question.can_update) {
-            editableComponents = <QnAValidatableFormComponent
-                onChange={this.onFormChange}
-                onSubmit={this.onFormSubmit}
-                validationRules={this.formConfig.validationRules}
-                formData={this.stateUtil.getFormValues(this)}
-                formStateFlag={this.stateUtil.getFormStateFlag(this)}>
+            questionSubComponents = <QnAValidatableFormComponent onChange={this.onFormChange} onSubmit={this.onFormSubmit}
+                                                                 validationRules={this.formConfig.validationRules}
+                                                                 formData={this.stateUtil.getFormValues(this)}
+                                                                 formStateFlag={this.stateUtil.getFormStateFlag(this)}
+                                                                 noValidateOnMount={this.props.noFormValidationOnMount}>
                 {questionName}
                 {questionSubTitle}
                 {questionContent}
+                <Item.Extra> {questionTags} </Item.Extra>
                 <Item.Extra>
-                    {questionTags}
-                </Item.Extra>
-                <Item.Extra>
-                    <div hidden={!isEditMode} className={styles.formButtonGroup}>
+                    <div hidden={!(isFormEditable)} className={styles.formButtonGroup}>
                         <Button.Group>
-                            <Button onClick={() => this.stateUtil.setToViewMode(this)}>Cancel</Button>
+                            <Button onClick={this.onQuestionEditCancel}>Cancel</Button>
                             <Button.Or/>
                             <Button loading={isCommentFormBusy} disabled={isCommentFormBusy} positive>Save</Button>
                         </Button.Group>
@@ -209,26 +182,18 @@ export default class QnAQuestionComponent extends Component {
             </QnAValidatableFormComponent>
         }
 
-        let questionEditAction = '';
-        let questionDeleteAction = '';
-
-        if (question.can_update) {
-            questionEditAction = <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action>;
-        }
-        if (question.can_delete) {
-            questionDeleteAction = <Comment.Action>Delete</Comment.Action>;
-        }
+        let questionEditAction = question.can_update ? <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action> : '';
+        let questionDeleteAction = question.can_delete ? <Comment.Action>Delete</Comment.Action> : '';
 
         return (
-
             <Item className={detailed ? '' : styles.questionItem}>
                 {questionStats}
                 <Item.Content className={detailed ? styles.questionItemContent : ''}>
-                    {editableComponents}
+                    {questionSubComponents}
                     <Item.Extra>
                         {userDetails}
                     </Item.Extra>
-                    <Comment.Group hidden={isEditMode || !detailed} className={styles.questionActions}>
+                    <Comment.Group hidden={(isFormEditable) || !detailed} className={styles.questionActions}>
                         <Comment>
                             <Comment.Content>
                                 <Comment.Actions>
@@ -239,7 +204,6 @@ export default class QnAQuestionComponent extends Component {
                         </Comment>
                     </Comment.Group>
                 </Item.Content>
-
             </Item>
         );
     }
