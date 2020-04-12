@@ -88,9 +88,9 @@ export default class QnAQuestionComponent extends Component {
         if (_.isEmpty(validationErrors)) {
             let savedQuestion;
             if (this.stateUtil.isEditMode(this)) {
-                savedQuestion = await API.updateQuestion(false, this.props.question.id, this.stateUtil.getFormValues(this));
+                savedQuestion = await API['updateQuestion'](false, this.props.question.id, this.stateUtil.getFormValues(this));
             } else {
-                savedQuestion = await API.addQuestion(false, {...this.stateUtil.getFormValues(this), team: this.props.teamId});
+                savedQuestion = await API['addQuestion'](false, {...this.stateUtil.getFormValues(this), team: this.props.teamId});
             }
             this.afterQuestionSave(savedQuestion);
         } else {
