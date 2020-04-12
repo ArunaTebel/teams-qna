@@ -5,7 +5,7 @@ import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidPa
 import styles from './styles/QnAAnswersComponent.module.scss'
 import API from "../util/API";
 
-export default class QnAAnswersComponent extends Component {
+export default class QnAAnswerListComponent extends Component {
 
     state = {answers: [], loading: true};
 

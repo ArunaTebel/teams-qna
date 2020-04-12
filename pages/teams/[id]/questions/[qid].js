@@ -5,7 +5,7 @@ import QnAQuestionComponent from "../../../../components/qna/QnAQuestionComponen
 import {Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentListComponent from "../../../../components/qna/QnACommentListComponent";
-import QnAAnswersComponent from "../../../../components/qna/QnAAnswersComponent";
+import QnAAnswerListComponent from "../../../../components/qna/QnAAnswerListComponent";
 import API from "../../../../components/util/API";
 
 class ArchQnAQuestionPageComponent extends Component {
@@ -51,7 +51,7 @@ class ArchQnAQuestionPageComponent extends Component {
         } else {
             questionComponent = <QnAQuestionComponent question={question} detailed={true} onSaveCallback={this.onUpdate} teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id} collapsed={false}/>;
-            answersComponent = <QnAAnswersComponent questionId={question.id}/>;
+            answersComponent = <QnAAnswerListComponent questionId={question.id}/>;
         }
 
         return (
