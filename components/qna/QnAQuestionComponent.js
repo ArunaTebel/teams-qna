@@ -11,7 +11,6 @@ import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
 import _ from "lodash";
 import API from "../util/API";
 import toasts from "../util/toasts";
-import Router from "next/router";
 import loader from "../util/loader";
 
 export default class QnAQuestionComponent extends Component {
