@@ -47,6 +47,9 @@ export default class QnAQuestionComponent extends Component {
         this.fetchQuestionTagsFormChoices = this.fetchQuestionTagsFormChoices.bind(this);
         this.onQuestionEditCancel = this.onQuestionEditCancel.bind(this);
         this.deleteQuestion = this.deleteQuestion.bind(this);
+    }
+
+    componentDidMount() {
         this.initFormData().then();
     }
 
