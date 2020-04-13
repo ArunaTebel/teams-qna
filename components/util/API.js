@@ -175,6 +175,60 @@ export default {
     },
 
     /**
+     * Adds a new question
+     *
+     * @param req
+     * @param answerData
+     * @returns {Promise<*|void>}
+     */
+    addAnswer: async (req, answerData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.addAnswer(req, answerData);
+        } else {
+            response = await (await http.post(`/api/answers/add`, answerData)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Updates the the given answer
+     *
+     * @param req
+     * @param answerId
+     * @param answerData
+     * @returns {Promise<*|void>}
+     */
+    updateAnswer: async (req, answerId, answerData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.updateAnswer(req, answerId, answerData);
+        } else {
+            response = await (await http.patch(`/api/answers/${answerId}/update/`, answerData)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Deletes the answer by the given id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    deleteAnswer: async (req, answerId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.deleteAnswer(req, answerId);
+        } else {
+            response = await http.delete(`/api/answers/${answerId}/delete`);
+        }
+        if (response.status === 204) {
+            return answerId;
+        }
+    },
+
+    /**
      * Fetches the comments of the given answer
      *
      * @param req
@@ -226,6 +280,23 @@ export default {
     },
 
     /**
+     * Fetches the answer comment having the id
+     *
+     * @param req
+     * @param answerCommentId
+     * @returns {Promise<*|void>}
+     */
+    fetchAnswerComment: async (req, answerCommentId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.fetchAnswerComment(req, answerCommentId);
+        } else {
+            response = await (await http.get(`/api/answer_comments/${answerCommentId}/get/`)).json();
+        }
+        return response;
+    },
+
+    /**
      * Adds a new comment to the given question
      *
      * @param req
@@ -239,6 +310,24 @@ export default {
             response = await ArchQnaApiService.addQuestionComment(req, questionId, commentData);
         } else {
             response = await (await http.post(`/api/questions/${questionId}/comments/add`, commentData)).json();
+        }
+        return response;
+    },
+
+    /**
+     * Adds a new comment to the given answer
+     *
+     * @param req
+     * @param answerId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    addAnswerComment: async (req, answerId, commentData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.addAnswerComment(req, answerId, commentData);
+        } else {
+            response = await (await http.post(`/api/answers/${answerId}/comments/add`, commentData)).json();
         }
         return response;
     },
@@ -262,6 +351,24 @@ export default {
     },
 
     /**
+     * Updates the answer comment
+     *
+     * @param req
+     * @param answerCommentId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    updateAnswerComment: async (req, answerCommentId, commentData) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.updateAnswerComment(req, answerCommentId, commentData);
+        } else {
+            response = await (await http.patch(`/api/answer_comments/${answerCommentId}/update/`, commentData)).json();
+        }
+        return response;
+    },
+
+    /**
      * Deletes the question comment by the given id
      *
      * @param req
@@ -277,6 +384,25 @@ export default {
         }
         if (response.status === 204) {
             return questionCommentId;
+        }
+    },
+
+    /**
+     * Deletes the answer comment by the given id
+     *
+     * @param req
+     * @param answerCommentId
+     * @returns {Promise<*|void>}
+     */
+    deleteAnswerComment: async (req, answerCommentId) => {
+        let response;
+        if (req) {
+            response = await ArchQnaApiService.deleteAnswerComment(req, answerCommentId);
+        } else {
+            response = await http.delete(`/api/answer_comments/${answerCommentId}/delete/`);
+        }
+        if (response.status === 204) {
+            return answerCommentId;
         }
     }
 }

@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../../../components/layout/QnAMainLayoutComponent";
 import {withRouter} from 'next/router';
-import QnAQuestionComponent from "../../../../components/qna/QnAQuestionComponent";
+import QnACrudItemComponent from "../../../../components/qna/QnACrudItemComponent";
 import {Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentListComponent from "../../../../components/qna/QnACommentListComponent";
 import QnAAnswerListComponent from "../../../../components/qna/QnAAnswerListComponent";
 import API from "../../../../components/util/API";
+import C from "../../../../components/util/consts";
 
 class ArchQnAQuestionPageComponent extends Component {
 
@@ -49,9 +50,14 @@ class ArchQnAQuestionPageComponent extends Component {
             commentListComponent = <QnAFluidParagraphPlaceholderListComponent/>;
             answersComponent = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            questionComponent = <QnAQuestionComponent question={question} detailed={true} onSaveCallback={this.onUpdate} teamId={question.team}/>;
+            questionComponent = <QnACrudItemComponent
+                crudItem={question}
+                crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}
+                detailed={true}
+                onSaveCallback={this.onUpdate}
+                teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id} collapsed={false}/>;
-            answersComponent = <QnAAnswerListComponent questionId={question.id}/>;
+            answersComponent = <QnAAnswerListComponent question={question}/>;
         }
 
         return (

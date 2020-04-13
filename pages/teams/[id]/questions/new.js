@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../../../components/layout/QnAMainLayoutComponent";
-import QnAQuestionComponent from "../../../../components/qna/QnAQuestionComponent";
+import QnACrudItemComponent from "../../../../components/qna/QnACrudItemComponent";
 import C from "../../../../components/util/consts";
 import {Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
@@ -22,10 +22,10 @@ export default class QnATeamNewQuestionPageComponent extends Component {
         };
     }
 
-    onCreateCallback(questionId) {
-        if (questionId) {
+    onCreateCallback(question) {
+        if (question && question.id) {
             toasts.showToast(C.messages.addSuccess);
-            Utils.redirectAfterMills(`/teams/${this.props.teamId}/questions/${questionId}`, 1000);
+            Utils.redirectAfterMills(`/teams/${this.props.teamId}/questions/${question.id}`, 1000);
         }
     }
 
@@ -40,12 +40,13 @@ export default class QnATeamNewQuestionPageComponent extends Component {
                     <Grid.Row>
                         <Grid.Column width={12}>
                             <Item.Group divided>
-                                <QnAQuestionComponent
-                                    mode={C.components.QnAQuestionComponent.modes.add}
+                                <QnACrudItemComponent
+                                    mode={C.components.QnACrudItemComponent.modes.add}
+                                    crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}
                                     detailed={true}
                                     onSaveCallback={this.onCreateCallback}
                                     teamId={this.props.teamId}
-                                    onQuestionEditCancel={this.onQuestionEditCancelCallback}
+                                    onCrudItemEditCancel={this.onQuestionEditCancelCallback}
                                     noFormValidationOnMount={true}
                                 />
                             </Item.Group>

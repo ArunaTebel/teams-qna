@@ -1,54 +1,54 @@
 import C from "../../util/consts";
+import _ from "lodash";
 
-export default class QnAQuestionComponentStateUtil {
+export default class QnACrudItemComponentStateUtil {
 
-    compConfig = C.components.QnAQuestionComponent;
+    compConfig = C.components.QnACrudItemComponent;
 
     setFormMeta(comp, metadataName, metadata) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.metadata[metadataName] = metadata;
+            nextState.crudItemEditForm.metadata[metadataName] = metadata;
             return nextState;
         });
     }
 
     getFormMeta(comp, metadataName) {
-        return comp.state.questionEditForm.metadata[metadataName];
+        return comp.state.crudItemEditForm.metadata[metadataName];
     }
 
     getFormFieldValue(comp, fieldName) {
-        return comp.state.questionEditForm.values[fieldName];
+        return comp.state.crudItemEditForm.values[fieldName];
     }
 
     setFormFieldValue(comp, fieldName, value) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.values[fieldName] = value;
+            nextState.crudItemEditForm.values[fieldName] = value;
             return nextState;
         });
     }
 
     getFormStateFlag(comp) {
-        return comp.state.questionEditForm.stateFlag;
+        return comp.state.crudItemEditForm.stateFlag;
     }
 
     setFormStateFlag(comp, formStateFlag) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.stateFlag = formStateFlag;
+            nextState.crudItemEditForm.stateFlag = formStateFlag;
             return nextState;
         });
     }
 
-
     getFormFieldErrors(comp, fieldName) {
-        return comp.state.questionEditForm.errors[fieldName];
+        return comp.state.crudItemEditForm.errors[fieldName];
     }
 
     setFormFieldErrors(comp, fieldName, errors) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.errors[fieldName] = errors;
+            nextState.crudItemEditForm.errors[fieldName] = errors;
             return nextState;
         });
     }
@@ -57,12 +57,13 @@ export default class QnAQuestionComponentStateUtil {
         comp.setState((prevState) => {
             const nextState = prevState;
             nextState.mode = this.compConfig.modes.edit;
-            if (comp.props.question && comp.props.question.id) {
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.id.name] = comp.props.question.id;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.name.name] = comp.props.question.name;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.sub_title.name] = comp.props.question.sub_title;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.content.name] = comp.props.question.content;
-                nextState.questionEditForm.values[this.compConfig.formConfig.fields.tags.name] = _.map(comp.props.question.tag_details, (tag) => tag.id);
+            if (comp.props.crudItem && comp.props.crudItem.id) {
+                const fields = this.compConfig.formConfig[comp.props.crudItemType.toLowerCase()].fields;
+                const formValues = {};
+                _.each(Object.keys(fields), (fieldName) => {
+                    formValues[fieldName] = fields[fieldName].getValueFromObj(comp.props.crudItem);
+                });
+                nextState.crudItemEditForm.values = formValues;
             }
             return nextState;
         });
@@ -87,7 +88,7 @@ export default class QnAQuestionComponentStateUtil {
     setFormErrors(comp, errors) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.errors = errors;
+            nextState.crudItemEditForm.errors = errors;
             return nextState;
         });
     }
@@ -95,31 +96,39 @@ export default class QnAQuestionComponentStateUtil {
     setIsFormBusy(comp, isBusy) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.questionEditForm.isBusy = isBusy;
+            nextState.crudItemEditForm.isBusy = isBusy;
             return nextState;
         });
     }
 
     getIsFormBusy(comp) {
-        return comp.state.questionEditForm.isBusy;
+        return comp.state.crudItemEditForm.isBusy;
     }
 
     getFormValues(comp) {
-        return comp.state.questionEditForm.values;
+        return comp.state.crudItemEditForm.values;
     }
 
-    closeDeleteQuestionModal(comp) {
+    setFormValues(comp, values) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.deleteQuestionModal.open = false;
+            nextState.crudItemEditForm.values = values;
             return nextState;
         });
     }
 
-    openDeleteQuestionModal(comp) {
+    closeDeleteCrudItemModal(comp) {
         comp.setState((prevState) => {
             const nextState = prevState;
-            nextState.deleteQuestionModal.open = true;
+            nextState.deleteCrudItemModal.open = false;
+            return nextState;
+        });
+    }
+
+    openDeleteCrudItemModal(comp) {
+        comp.setState((prevState) => {
+            const nextState = prevState;
+            nextState.deleteCrudItemModal.open = true;
             return nextState;
         });
     }
