@@ -5,7 +5,6 @@ import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
-import QnAQuestionComponent from "./QnAQuestionComponent";
 
 class QnATeamHomePageComponent extends Component {
 
