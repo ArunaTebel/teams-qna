@@ -11,3 +11,19 @@
 .paginationContainer {
   margin-top: 15px;
 }
+
+.commentListHeaderContainer {
+  display: inline-block;
+}
+
+.commentListHeader {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.commentListShowHideLink {
+  float: right;
+  margin-top: -2px !important;
+}
+

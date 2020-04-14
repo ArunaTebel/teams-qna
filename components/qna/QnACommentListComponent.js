@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Comment, Divider, Form, Header, Icon} from 'semantic-ui-react'
+import {Button, Comment, Divider, Form, Icon} from 'semantic-ui-react'
 import _ from 'lodash'
 import API from "../util/API";
 import Utils from "../util/utils";
@@ -29,6 +29,7 @@ export default class QnACommentListComponent extends Component {
             errors: {},
             stateFlag: undefined
         },
+        showList: false
     };
 
     constructor(props) {
@@ -168,6 +169,22 @@ export default class QnACommentListComponent extends Component {
                 nextState.commentListLoading = isLoading;
                 return nextState;
             });
+        },
+
+        showList() {
+            this.setState({showList: true});
+        },
+
+        hideList() {
+            this.setState({showList: false});
+        },
+
+        isListVisible() {
+            return this.state.showList;
+        },
+
+        getComments() {
+            return this.state.comments;
         }
     };
 
@@ -329,29 +346,42 @@ export default class QnACommentListComponent extends Component {
 
         const formMode = this.stateUtil.getCommentFormMode();
         const isCommentFormBusy = this.stateUtil.isCommentFormBusy();
+        const isListVisible = this.stateUtil.isListVisible();
+        const commentListData = this.stateUtil.getComments();
+        const commentList = commentListData.currentList;
+
         let comments;
 
         if (this.stateUtil.isCommentListLoading()) {
             comments = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            comments = this.state.comments.currentList.map((comment) => <QnACommentComponent
-                key={comment.id}
-                comment={comment}
-                onEditClick={this.initEditCommentForm}
-                onDeleteClick={this.deleteComment}/>
-            );
+            if (isListVisible) {
+                comments = commentList.map((comment) => <QnACommentComponent
+                    key={comment.id}
+                    comment={comment}
+                    onEditClick={this.initEditCommentForm}
+                    onDeleteClick={this.deleteComment}/>
+                );
+            } else {
+                comments = [];
+            }
         }
 
         return (
             <div>
-                <Header as='h3' dividing>Comments</Header>
+                <div className={styles.commentListHeaderContainer}>
+                    <span className={styles.commentListHeader}>Comments ({commentListData.totalCount})</span>
+                    <Button compact icon={isListVisible ? 'eye' : 'eye slash'} basic content={isListVisible ? 'Hide' : 'Show'} labelPosition='left' size='mini'
+                            className={styles.commentListShowHideLink} onClick={isListVisible ? this.stateUtil.hideList : this.stateUtil.showList}/>
+                </div>
+                <Divider/>
                 <Comment.Group size='small'>
                     {comments}
-                    <div className={styles.paginationContainer}>
+                    <div className={styles.paginationContainer} hidden={!isListVisible}>
                         <QnAPaginationComponent
-                            totalItems={this.state.comments.totalCount}
+                            totalItems={commentListData.totalCount}
                             pageSize={C.components.QnAPaginationComponent.pageSize.default}
-                            activePage={this.state.comments.currentPage}
+                            activePage={commentListData.currentPage}
                             onPageChange={this.onCommentListPaginate}
                         />
                     </div>
