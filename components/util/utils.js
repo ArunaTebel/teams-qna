@@ -1,4 +1,4 @@
-import {toast} from "react-toastify";
+import Router from "next/router";
 
 export default {
     strEllipsis: function (str, maxLen, suffix = '...') {
@@ -10,21 +10,13 @@ export default {
         return utcTimeStr ? utcTimeStr.split('T')[0] : '';
     },
 
-    toasts: {
-        showToast(message, type = 'success', options = {}) {
-            if (type === 'success') {
-                toast.success(message);
-            } else if (type === 'error') {
-                toast.error(message);
-            } else {
-                toast(message);
-            }
-        }
-    },
-
     strings: {
         numStrComp(a, b) {
             return parseInt(a, 10) === parseInt(b, 10);
         }
-    }
+    },
+
+    redirectAfterMills(url, milliseconds) {
+        setTimeout(async () => await Router.push(url), milliseconds);
+    },
 }

@@ -9,6 +9,7 @@ import C from "../util/consts";
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentComponent from "./QnACommentComponent";
 import loader from "../util/loader";
+import toasts from "../util/toasts";
 
 export default class QnACommentListComponent extends Component {
 
@@ -24,7 +25,8 @@ export default class QnACommentListComponent extends Component {
                 [this.formConfig.fields.commentId.name]: '',
                 [this.formConfig.fields.comment.name]: '',
             },
-            errors: {}
+            errors: {},
+            stateFlag: undefined
         },
     };
 
@@ -56,16 +58,20 @@ export default class QnACommentListComponent extends Component {
 
     stateUtil = {
 
-        get: (key) => {
-            return this.state[key];
+        getFormStateFlag: () => {
+            return this.state.commentForm.stateFlag;
         },
 
-        set: (key, value) => {
+        setFormStateFlag: (formStateFlag) => {
             this.setState((prevState) => {
                 const nextState = prevState;
-                nextState[key] = value;
+                nextState.commentForm.stateFlag = formStateFlag;
                 return nextState;
             });
+        },
+
+        getFormValues: () => {
+            return this.state.commentForm.values;
         },
 
         getFormFieldValue: (fieldName) => {
@@ -188,12 +194,14 @@ export default class QnACommentListComponent extends Component {
         let comment;
         if (this.isQuestionComment()) {
             comment = await API.fetchQuestionComment(false, commentId);
-            if (this.isACommentObj(comment)) {
-                this.stateUtil.setCommentFormMode(this.formConfig.modes.edit);
-                this.stateUtil.setFormFieldValue(this.formConfig.fields.commentId.name, comment.id);
-                this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, comment.content);
-                this.commentFormRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-            }
+        } else {
+            comment = await API.fetchAnswerComment(false, commentId);
+        }
+        if (this.isACommentObj(comment)) {
+            this.stateUtil.setCommentFormMode(this.formConfig.modes.edit);
+            this.stateUtil.setFormFieldValue(this.formConfig.fields.commentId.name, comment.id);
+            this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, comment.content);
+            this.commentFormRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
         this.stateUtil.setIsCommentFormBusy(false);
         loader.hide();
@@ -201,14 +209,17 @@ export default class QnACommentListComponent extends Component {
 
     async deleteComment(commentId) {
         loader.show();
+        let deletedCommentId;
         if (this.isQuestionComment()) {
-            let deletedCommentId = await API.deleteQuestionComment(false, commentId);
-            if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
-                Utils.toasts.showToast(C.messages.success);
-                this.stateUtil.removeCommentById(commentId);
-            } else {
-                Utils.toasts.showToast(C.messages.error, 'error');
-            }
+            deletedCommentId = await API.deleteQuestionComment(false, commentId);
+        } else {
+            deletedCommentId = await API.deleteAnswerComment(false, commentId);
+        }
+        if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
+            toasts.showToast(C.messages.deleteSuccess);
+            this.stateUtil.removeCommentById(commentId);
+        } else {
+            toasts.showToast(C.messages.error, 'error');
         }
         loader.hide();
     }
@@ -219,6 +230,7 @@ export default class QnACommentListComponent extends Component {
             this.stateUtil.setFormFieldErrors(this.formConfig.fields.comment.name, false);
         }
         this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, comment);
+        this.stateUtil.setFormStateFlag(!this.stateUtil.getFormStateFlag());
     }
 
     onFormChange(validationErrors) {
@@ -243,17 +255,32 @@ export default class QnACommentListComponent extends Component {
     }
 
     async addComment(commentContent) {
-        let addCommentResponse = await API.addQuestionComment(false, this.props.questionId, {
-            question: this.props.questionId,
-            content: commentContent
-        });
+        let addCommentResponse;
+        if (this.isQuestionComment()) {
+            addCommentResponse = await API.addQuestionComment(false, this.props.questionId, {
+                question: this.props.questionId,
+                content: commentContent
+            });
+        } else {
+            addCommentResponse = await API.addAnswerComment(false, this.props.answerId, {
+                answer: this.props.answerId,
+                content: commentContent
+            });
+        }
         this.onReceiveSaveCommentResponse(addCommentResponse);
     }
 
     async updateComment(commentId, commentContent) {
-        let updateCommentResponse = await API.updateQuestionComment(false, commentId, {
-            content: commentContent
-        });
+        let updateCommentResponse;
+        if (this.isQuestionComment()) {
+            updateCommentResponse = await API.updateQuestionComment(false, commentId, {
+                content: commentContent
+            });
+        } else {
+            updateCommentResponse = await API.updateAnswerComment(false, commentId, {
+                content: commentContent
+            });
+        }
         this.onReceiveSaveCommentResponse(updateCommentResponse);
     }
 
@@ -262,13 +289,14 @@ export default class QnACommentListComponent extends Component {
             this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, '');
             if (this.isCommentFormAddMode()) {
                 this.stateUtil.pushNewComment(savedComment);
+                toasts.showToast(C.messages.addSuccess);
             } else {
                 this.stateUtil.replaceComment(savedComment);
                 this.stateUtil.setCommentFormMode(this.formConfig.modes.add);
+                toasts.showToast(C.messages.updateSuccess);
             }
-            Utils.toasts.showToast(C.messages.success);
         } else {
-            Utils.toasts.showToast(C.messages.error, 'error');
+            toasts.showToast(C.messages.error, 'error');
         }
         this.stateUtil.setIsCommentFormBusy(false);
     }
@@ -300,7 +328,9 @@ export default class QnACommentListComponent extends Component {
                         onChange={this.onFormChange}
                         onSubmit={this.onFormSubmit}
                         validationRules={this.formConfig.validationRules}
-                        formData={this.stateUtil.getFormFieldValue(this.formConfig.fields.comment.name)}>
+                        formData={this.stateUtil.getFormValues()}
+                        formStateFlag={this.stateUtil.getFormStateFlag()}
+                        noValidateOnMount>
                         <Form.TextArea
                             name={this.formConfig.fields.comment.name}
                             onChange={this.onCommentChange}

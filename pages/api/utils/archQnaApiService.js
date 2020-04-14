@@ -1,7 +1,6 @@
-import fetch from "isomorphic-unfetch";
 import C from "./consts";
 import cookieUtils from "./cookies";
-import httpUtil from "../../../components/util/httpUtil";
+import http from "../../../components/util/httpUtil";
 
 /**
  * Returns the Authorization header populated with the bearer access token
@@ -27,7 +26,7 @@ async function doGet(url, nextReq, options = {}) {
         options.headers = {};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.get(url, options);
+    return await http.get(url, options);
 }
 
 /**
@@ -45,7 +44,7 @@ async function doPost(url, data, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.post(url, data, options);
+    return await http.post(url, data, options);
 }
 
 /**
@@ -63,7 +62,25 @@ async function doPut(url, data, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.put(url, data, options);
+    return await http.put(url, data, options);
+}
+
+/**
+ * Performs a PATCH request to the given url using the options given
+ *
+ * @param url
+ * @param data
+ * @param nextReq
+ * @param options
+ * @returns {Promise<Response>}
+ */
+async function doPatch(url, data, nextReq, options = {}) {
+    options['method'] = 'PATCH';
+    if (!options.headers) {
+        options.headers = {'Content-Type': 'application/json'};
+    }
+    options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
+    return await http.patch(url, data, options);
 }
 
 /**
@@ -80,7 +97,7 @@ async function doDelete(url, nextReq, options = {}) {
         options.headers = {'Content-Type': 'application/json'};
     }
     options['headers']['Authorization'] = getAuthorizationHeader(nextReq);
-    return await httpUtil.delete(url, options);
+    return await http.delete(url, options);
 }
 
 /**
@@ -173,6 +190,19 @@ export default {
     },
 
     /**
+     * Fetches the tags in the given team
+     *
+     * @param req
+     * @param teamId
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamTags: async (req, teamId) => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/tags/`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the answers of the given question
      *
      * @param req
@@ -186,6 +216,46 @@ export default {
     },
 
     /**
+     * Fetch the answer by id
+     *
+     * @param req
+     * @param answerData
+     * @returns {Promise<*|void>}
+     */
+    addAnswer: async (req, answerData) => {
+        return await doPost(`${C.API_PATH}/answers/`, answerData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Updates the answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @param answerData
+     * @returns {Promise<any>}
+     */
+    updateAnswer: async (req, answerId, answerData) => {
+        return await doPatch(`${C.API_PATH}/answers/${answerId}/`, answerData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Deletes the answer by the given id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    deleteAnswer: async (req, answerId) => {
+        return await doDelete(`${C.API_PATH}/answers/${answerId}/`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetch the question by id
      *
      * @param req
@@ -194,6 +264,46 @@ export default {
      */
     fetchQuestion: async (req, questionId) => {
         return await doGet(`${C.API_PATH}/questions/${questionId}`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetch the question by id
+     *
+     * @param req
+     * @param questionData
+     * @returns {Promise<*|void>}
+     */
+    addQuestion: async (req, questionData) => {
+        return await doPost(`${C.API_PATH}/questions/`, questionData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Updates the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @param questionData
+     * @returns {Promise<any>}
+     */
+    updateQuestion: async (req, questionId, questionData) => {
+        return await doPatch(`${C.API_PATH}/questions/${questionId}/`, questionData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Deletes the question by the given id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    deleteQuestion: async (req, questionId) => {
+        return await doDelete(`${C.API_PATH}/questions/${questionId}/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -226,6 +336,33 @@ export default {
     },
 
     /**
+     * Adds a new comment to the given answer
+     *
+     * @param req
+     * @param answerId
+     * @param commentData
+     * @returns {Promise<*|void>}
+     */
+    addAnswerComment: async (req, answerId, commentData) => {
+        return await doPost(`${C.API_PATH}/answer-comments/`, commentData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the answer comment having the id
+     *
+     * @param req
+     * @param answerCommentId
+     * @returns {Promise<*|void>}
+     */
+    fetchAnswerComment: async (req, answerCommentId) => {
+        return await doGet(`${C.API_PATH}/answer-comments/${answerCommentId}/`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the question comment having the id
      *
      * @param req
@@ -247,7 +384,21 @@ export default {
      * @returns {Promise<any>}
      */
     updateQuestionComment: async (req, questionCommentId, commentData) => {
-        return await doPut(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
+        return await doPatch(`${C.API_PATH}/question-comments/${questionCommentId}/`, commentData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Updates the answer comment having the id
+     *
+     * @param req
+     * @param answerCommentId
+     * @param commentData
+     * @returns {Promise<any>}
+     */
+    updateAnswerComment: async (req, answerCommentId, commentData) => {
+        return await doPatch(`${C.API_PATH}/answer-comments/${answerCommentId}/`, commentData, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -261,6 +412,19 @@ export default {
      */
     deleteQuestionComment: async (req, questionCommentId) => {
         return await doDelete(`${C.API_PATH}/question-comments/${questionCommentId}/`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Deletes the answer comment by the given id
+     *
+     * @param req
+     * @param answerCommentId
+     * @returns {Promise<*|void>}
+     */
+    deleteAnswerComment: async (req, answerCommentId) => {
+        return await doDelete(`${C.API_PATH}/answer-comments/${answerCommentId}/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
