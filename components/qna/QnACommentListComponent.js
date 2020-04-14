@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Comment, Form, Header, Icon} from 'semantic-ui-react'
+import {Button, Comment, Divider, Form, Icon} from 'semantic-ui-react'
 import _ from 'lodash'
 import API from "../util/API";
 import Utils from "../util/utils";
@@ -10,6 +10,7 @@ import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidPa
 import QnACommentComponent from "./QnACommentComponent";
 import loader from "../util/loader";
 import toasts from "../util/toasts";
+import QnAPaginationComponent from "../commons/QnAPaginationComponent";
 
 export default class QnACommentListComponent extends Component {
 
@@ -18,7 +19,7 @@ export default class QnACommentListComponent extends Component {
     state = {
         commentListLoading: true,
         commentFormBusy: false,
-        comments: [],
+        comments: {totalCount: 0, currentList: [], currentPage: 1},
         commentForm: {
             mode: this.formConfig.modes.add,
             values: {
@@ -28,6 +29,7 @@ export default class QnACommentListComponent extends Component {
             errors: {},
             stateFlag: undefined
         },
+        showList: false
     };
 
     constructor(props) {
@@ -46,6 +48,8 @@ export default class QnACommentListComponent extends Component {
         this.addComment = this.addComment.bind(this);
         this.updateComment = this.updateComment.bind(this);
         this.isCommentFormAddMode = this.isCommentFormAddMode.bind(this);
+        this.onCommentListPaginate = this.onCommentListPaginate.bind(this);
+        this.loadCommentListForPage = this.loadCommentListForPage.bind(this);
 
         this.initStateUtilFunctions();
     }
@@ -109,7 +113,8 @@ export default class QnACommentListComponent extends Component {
         pushNewComment(comment) {
             this.setState((prevState) => {
                 const nextState = prevState;
-                nextState.comments.push(comment);
+                nextState.comments.currentList.push(comment);
+                nextState.comments.totalCount += 1;
                 return nextState;
             });
         },
@@ -133,7 +138,7 @@ export default class QnACommentListComponent extends Component {
         replaceComment(comment) {
             this.setState((prevState) => {
                 const nextState = prevState;
-                nextState.comments.splice(_.findIndex(nextState.comments, {id: comment.id}), 1, comment);
+                nextState.comments.currentList.splice(_.findIndex(nextState.comments.currentList, {id: comment.id}), 1, comment);
                 return nextState;
             });
         },
@@ -154,26 +159,62 @@ export default class QnACommentListComponent extends Component {
             });
         },
 
-        removeCommentById(commentId) {
+        async reloadCommentListForCurrentPage() {
+            await this.loadCommentListForPage(this.state.comments.currentPage);
+        },
+
+        setCommentListLoading(isLoading) {
             this.setState((prevState) => {
                 const nextState = prevState;
-                nextState.comments.splice(_.findIndex(nextState.comments, {id: commentId}), 1);
+                nextState.commentListLoading = isLoading;
                 return nextState;
             });
+        },
+
+        showList() {
+            this.setState({showList: true});
+        },
+
+        hideList() {
+            this.setState({showList: false});
+        },
+
+        isListVisible() {
+            return this.state.showList;
+        },
+
+        getComments() {
+            return this.state.comments;
         }
     };
 
     async componentDidMount() {
-        let comments = [];
+        await this.loadCommentListForPage();
+    }
+
+
+    async onCommentListPaginate(e, pageData) {
+        this.setState({isLoading: true});
+        await this.loadCommentListForPage(pageData.activePage);
+        this.setState({isLoading: false});
+    }
+
+    async loadCommentListForPage(page = 1) {
+        this.stateUtil.setCommentListLoading(true);
+        let commentsResponse;
         if (this.isQuestionComment()) {
-            comments = await API.fetchQuestionComments(false, this.props.questionId);
+            commentsResponse = await API.fetchQuestionComments(false, this.props.questionId, `page=${page}`);
         } else {
-            comments = await API.fetchAnswerComments(false, this.props.answerId);
+            commentsResponse = await API.fetchAnswerComments(false, this.props.answerId, `page=${page}`);
         }
-        this.setState({
-            comments: comments,
-            commentListLoading: false
+        this.setState((prevState) => {
+            const nextState = prevState;
+            nextState.comments.totalCount = commentsResponse.count;
+            nextState.comments.currentList = commentsResponse.results;
+            nextState.comments.currentPage = page;
+            return nextState;
         });
+        this.stateUtil.setCommentListLoading(false);
     }
 
     isQuestionComment() {
@@ -217,7 +258,7 @@ export default class QnACommentListComponent extends Component {
         }
         if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
             toasts.showToast(C.messages.deleteSuccess);
-            this.stateUtil.removeCommentById(commentId);
+            await this.stateUtil.reloadCommentListForCurrentPage();
         } else {
             toasts.showToast(C.messages.error, 'error');
         }
@@ -284,11 +325,11 @@ export default class QnACommentListComponent extends Component {
         this.onReceiveSaveCommentResponse(updateCommentResponse);
     }
 
-    onReceiveSaveCommentResponse(savedComment) {
+    async onReceiveSaveCommentResponse(savedComment) {
         if (this.isACommentObj(savedComment)) {
             this.stateUtil.setFormFieldValue(this.formConfig.fields.comment.name, '');
             if (this.isCommentFormAddMode()) {
-                this.stateUtil.pushNewComment(savedComment);
+                await this.stateUtil.reloadCommentListForCurrentPage();
                 toasts.showToast(C.messages.addSuccess);
             } else {
                 this.stateUtil.replaceComment(savedComment);
@@ -305,24 +346,45 @@ export default class QnACommentListComponent extends Component {
 
         const formMode = this.stateUtil.getCommentFormMode();
         const isCommentFormBusy = this.stateUtil.isCommentFormBusy();
+        const isListVisible = this.stateUtil.isListVisible();
+        const commentListData = this.stateUtil.getComments();
+        const commentList = commentListData.currentList;
+
         let comments;
 
         if (this.stateUtil.isCommentListLoading()) {
             comments = <QnAFluidParagraphPlaceholderListComponent/>;
         } else {
-            comments = this.state.comments.map((comment) => <QnACommentComponent
-                key={comment.id}
-                comment={comment}
-                onEditClick={this.initEditCommentForm}
-                onDeleteClick={this.deleteComment}/>
-            );
+            if (isListVisible) {
+                comments = commentList.map((comment) => <QnACommentComponent
+                    key={comment.id}
+                    comment={comment}
+                    onEditClick={this.initEditCommentForm}
+                    onDeleteClick={this.deleteComment}/>
+                );
+            } else {
+                comments = [];
+            }
         }
 
         return (
             <div>
-                <Header as='h3' dividing>Comments</Header>
+                <div className={styles.commentListHeaderContainer}>
+                    <span className={styles.commentListHeader}>Comments ({commentListData.totalCount})</span>
+                    <Button compact icon={isListVisible ? 'eye' : 'eye slash'} basic content={isListVisible ? 'Hide' : 'Show'} labelPosition='left' size='mini'
+                            className={styles.commentListShowHideLink} onClick={isListVisible ? this.stateUtil.hideList : this.stateUtil.showList}/>
+                </div>
+                <Divider/>
                 <Comment.Group size='small'>
                     {comments}
+                    <div className={styles.paginationContainer} hidden={!isListVisible}>
+                        <QnAPaginationComponent
+                            totalItems={commentListData.totalCount}
+                            pageSize={C.components.QnAPaginationComponent.pageSize.default}
+                            activePage={commentListData.currentPage}
+                            onPageChange={this.onCommentListPaginate}
+                        />
+                    </div>
                     <div ref={this.commentFormRef}/>
                     <QnAValidatableFormComponent
                         onChange={this.onFormChange}

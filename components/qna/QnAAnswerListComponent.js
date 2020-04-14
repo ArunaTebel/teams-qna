@@ -8,6 +8,7 @@ import C from "../util/consts";
 import QnACommentListComponent from "./QnACommentListComponent";
 import _ from "lodash";
 import toasts from "../util/toasts";
+import Utils from "../util/utils";
 
 export default class QnAAnswerListComponent extends Component {
 
@@ -15,9 +16,15 @@ export default class QnAAnswerListComponent extends Component {
 
     constructor(props) {
         super(props);
+
+        this.addNewAnswerButtonRef = React.createRef();
+        this.addNewAnswerFormRef = React.createRef();
+
         this.onAnswerUpdateCallback = this.onAnswerUpdateCallback.bind(this);
         this.onAnswerCreateCallback = this.onAnswerCreateCallback.bind(this);
         this.onAnswerDeleteCallback = this.onAnswerDeleteCallback.bind(this);
+        this.onAddNewAnswer = this.onAddNewAnswer.bind(this);
+        this.onCancelAddNewAnswer = this.onCancelAddNewAnswer.bind(this);
     }
 
     async componentDidMount() {
@@ -61,6 +68,24 @@ export default class QnAAnswerListComponent extends Component {
         }
     }
 
+    onAddNewAnswer() {
+        this.setState(
+            () => {
+                return {showNewAnswerForm: true}
+            },
+            () => this.addNewAnswerFormRef.current.scrollIntoView({behavior: 'smooth', block: 'start'})
+        );
+    }
+
+    onCancelAddNewAnswer() {
+        this.setState(
+            () => {
+                return {showNewAnswerForm: false}
+            },
+            () => this.addNewAnswerButtonRef.current.scrollIntoView({behavior: 'smooth', block: 'end'})
+        );
+    }
+
     render() {
 
         let answerComponents;
@@ -72,7 +97,7 @@ export default class QnAAnswerListComponent extends Component {
                                           questionId={this.props.question.id}
                                           onDeleteCallback={this.onAnswerDeleteCallback}
                                           crudItemType={C.components.QnACrudItemComponent.crudItemTypes.answer}/>,
-                    <Grid key={`answer_comment_list_grid${idx}`}>
+                    <Grid key={`answer_comment_list_grid${idx}`} style={{marginBottom: '10px'}}>
                         <Grid.Row>
                             <Grid.Column width={1}/>
                             <Grid.Column width={15}><QnACommentListComponent collapsed={true} answerId={answer.id}/></Grid.Column>
@@ -87,9 +112,7 @@ export default class QnAAnswerListComponent extends Component {
                                           mode={C.components.QnACrudItemComponent.modes.add}
                                           crudItemType={C.components.QnACrudItemComponent.crudItemTypes.answer}
                                           onSaveCallback={this.onAnswerCreateCallback}
-                                          onCrudItemEditCancel={() => {
-                                              this.setState({showNewAnswerForm: false});
-                                          }}/>
+                                          onCrudItemEditCancel={this.onCancelAddNewAnswer}/>
                 )
             }
         } else {
@@ -98,14 +121,16 @@ export default class QnAAnswerListComponent extends Component {
 
         return (
             <div>
+                <div ref={this.addNewAnswerButtonRef}/>
                 <Button size={'small'} className={styles.addAnswerButton} content='Add Answer' labelPosition='right' icon='lightbulb' color={'blue'}
-                        onClick={() => this.setState({showNewAnswerForm: true})}/>
+                        onClick={this.onAddNewAnswer}/>
                 <Header as='h3' dividing>
                     Answers
                 </Header>
                 <Item.Group divided>
                     {answerComponents}
                 </Item.Group>
+                <div ref={this.addNewAnswerFormRef}/>
             </div>
 
         );

@@ -20,7 +20,7 @@ class QnAHomePageComponent extends Component {
                         />
                         <Card.Header>{team.name}</Card.Header>
                         <Card.Meta>{`${team.user_count} Users`}</Card.Meta>
-                        <Card.Description>{Utils.strEllipsis(team.description, C.team.description_max_len)}</Card.Description>
+                        <Card.Description>{Utils.strEllipsis(team.description, C.components.QnAHomePageComponent.team.description_max_len)}</Card.Description>
                     </Card.Content>
                     <Card.Content extra>
                         <Button basic color='green' href={`/teams/${team.id}`}>

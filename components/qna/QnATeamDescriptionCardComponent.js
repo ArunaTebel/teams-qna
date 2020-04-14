@@ -13,7 +13,7 @@ export default class QnATeamDescriptionCardComponent extends Component {
                 <Card.Content>
                     <Card.Header>{team.name}</Card.Header>
                     <Card.Meta>
-                        <span>Joined: {Utils.getDateFromUTCTimeStr(team.created_at)}</span>
+                        <span>Joined: {Utils.datetime.todate(team.created_at)}</span>
                     </Card.Meta>
                     <Card.Description>{team.description}</Card.Description>
                 </Card.Content>

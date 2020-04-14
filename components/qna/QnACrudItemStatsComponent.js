@@ -12,13 +12,13 @@ export default class QnACrudItemStatsComponent extends Component {
 
         if (this.props.crudItemType === C.components.QnACrudItemComponent.crudItemTypes.question) {
             questionSpecificStats = [
-                <Grid.Row className={styles.questionStatsGridRow}>
+                <Grid.Row key={'question_specific_stats_answer_count'} className={styles.questionStatsGridRow}>
                     <Grid.Column className={styles.questionStatsGridRowDiv}>
                         <div className={styles.questionStatsNum}>{crudItem.answer_count}</div>
                         <small>Answers</small>
                     </Grid.Column>
                 </Grid.Row>,
-                <Grid.Row className={styles.questionStatsGridRow}>
+                <Grid.Row key={'question_specific_stats_view'} className={styles.questionStatsGridRow}>
                     <Grid.Column className={styles.questionStatsGridRowDiv}>
                         <div className={styles.questionStatsNum}>{crudItem.views}</div>
                         <small>Views</small>

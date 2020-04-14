@@ -1,4 +1,13 @@
 import Router from "next/router";
+import moment from "moment";
+
+
+const datetimeConfig = {
+    full_date_format: 'MMMM Do YYYY',
+    full_time_format: 'h:mm:ss a',
+    full_date_time_format: 'MMMM Do YYYY, h:mm:ss a',
+};
+
 
 export default {
     strEllipsis: function (str, maxLen, suffix = '...') {
@@ -6,8 +15,17 @@ export default {
 
     },
 
-    getDateFromUTCTimeStr(utcTimeStr) {
-        return utcTimeStr ? utcTimeStr.split('T')[0] : '';
+    datetime: {
+
+        todatetime: (utcTimeStr) => {
+            return moment(new Date(utcTimeStr)).format(datetimeConfig.full_date_time_format);
+        },
+        totime: (utcTimeStr) => {
+            return moment(new Date(utcTimeStr)).format(datetimeConfig.full_time_format);
+        },
+        todate: (utcTimeStr) => {
+            return moment(new Date(utcTimeStr)).format(datetimeConfig.full_date_format);
+        },
     },
 
     strings: {
