@@ -80,7 +80,12 @@ export default class QnACrudItemComponent extends Component {
     }
 
     async initQuestionFormData() {
-        const teamTags = await API.fetchTeamTags(false, this.props.teamId);
+        let teamTags = [];
+        if (this.props.specificData) {
+            teamTags = this.props.specificData.tags
+        } else {
+            teamTags = await API.fetchTeamTags(false, this.props.teamId);
+        }
         const teamTagChoices = _.map(teamTags, (tag) => {
             return {key: tag.id, text: tag.name, value: tag.id}
         });

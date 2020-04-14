@@ -8,15 +8,20 @@ import API from "../util/API";
 import QnACrudItemComponent from "./QnACrudItemComponent";
 import Router from 'next/router'
 import C from "../util/consts";
+import _ from "lodash";
 
 class QnATeamHomePageComponent extends Component {
 
-    state = {questions: [], activityLogs: []};
+    state = {questions: [], tags: [], activityLogs: [], isLoading: true};
 
     async componentDidMount() {
         const questions = await API.fetchTeamQuestions(false, this.props.team.id);
+        const teamTags = await API.fetchTeamTags(false, this.props.teamId);
+        console.log(questions);
         this.setState({
-            questions: questions,
+            questions: questions.results,
+            tags: teamTags,
+            isLoading: false,
         });
     }
 
@@ -24,15 +29,14 @@ class QnATeamHomePageComponent extends Component {
 
         let questionList;
 
-        if (this.state.questions.length === 0) {
+        if (this.state.isLoading) {
             questionList = <Grid.Column width={9}>
                 <Divider/>
                 <QnAFluidParagraphPlaceholderListComponent/>
             </Grid.Column>
         } else {
-
             const questionListItems = this.state.questions.map(question => {
-                return <QnACrudItemComponent key={question.id} crudItem={question} teamId={this.props.team.id}
+                return <QnACrudItemComponent key={question.id} crudItem={question} teamId={this.props.team.id} specificData={{tags: this.state.tags}}
                                              crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}/>
             });
 
