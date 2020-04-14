@@ -1,24 +1,27 @@
 import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../../../components/layout/QnAMainLayoutComponent";
-import {withRouter} from 'next/router';
+import Router from 'next/router';
 import QnACrudItemComponent from "../../../../components/qna/QnACrudItemComponent";
-import {Grid, Item} from "semantic-ui-react";
+import {Button, Grid, Item} from "semantic-ui-react";
 import QnAFluidParagraphPlaceholderListComponent from "../../../../components/qna/placeholders/QnAFluidParagraphPlaceholderListComponent";
 import QnACommentListComponent from "../../../../components/qna/QnACommentListComponent";
 import QnAAnswerListComponent from "../../../../components/qna/QnAAnswerListComponent";
 import API from "../../../../components/util/API";
 import C from "../../../../components/util/consts";
+import Utils from "../../../../components/util/utils";
 
 class ArchQnAQuestionPageComponent extends Component {
 
     state = {
-        question: {}
+        question: {},
+        team: {name: ''},
     };
 
     constructor(props) {
         super(props);
         this.onUpdate = this.onUpdate.bind(this);
         this.fetchQuestion = this.fetchQuestion.bind(this);
+        this.fetchTeam = this.fetchTeam.bind(this);
     }
 
     static async getInitialProps(ctx) {
@@ -28,11 +31,17 @@ class ArchQnAQuestionPageComponent extends Component {
     }
 
     async componentDidMount() {
-        this.setState({question: await this.fetchQuestion()})
+        const question = await API.fetchQuestion(false, this.props.questionId);
+        const team = await API.fetchTeam(false, question.team);
+        this.setState({question: await this.fetchQuestion(), team: team});
     }
 
     async fetchQuestion() {
         return await API.fetchQuestion(false, this.props.questionId);
+    }
+
+    async fetchTeam() {
+        return await API.fetchTeam(false, this.state.question.team);
     }
 
     async onUpdate() {
@@ -65,6 +74,8 @@ class ArchQnAQuestionPageComponent extends Component {
                 <Grid celled='internally'>
                     <Grid.Row>
                         <Grid.Column width={12}>
+                            <Button size={'mini'} icon={'arrow left'} basic compact onClick={() => Router.push(`/teams/${this.state.team.id}`)}
+                                    content={Utils.strEllipsis(`Back to ${this.state.team.name}`, 35)}/>
                             <Item.Group divided>
                                 {questionComponent}
                                 <Grid>
@@ -95,4 +106,4 @@ class ArchQnAQuestionPageComponent extends Component {
     }
 }
 
-export default withRouter(ArchQnAQuestionPageComponent)
+export default ArchQnAQuestionPageComponent

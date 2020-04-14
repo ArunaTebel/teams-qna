@@ -47,7 +47,7 @@ export default {
         if (req) {
             response = await ArchQnaApiService.fetchTeam(req, teamId);
         } else {
-            response = await (await http.get(`/api/teams/${teamId}`)).json();
+            response = await (await http.get(`/api/teams/${teamId}/get`)).json();
         }
         return response;
     },
