@@ -5,6 +5,9 @@ import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
+import QnACrudItemComponent from "./QnACrudItemComponent";
+import Router from 'next/router'
+import C from "../util/consts";
 
 class QnATeamHomePageComponent extends Component {
 
@@ -25,7 +28,8 @@ class QnATeamHomePageComponent extends Component {
             questionListItems = <QnAFluidParagraphPlaceholderListComponent/>
         } else {
             questionListItems = this.state.questions.map(question => {
-                return <QnAQuestionComponent key={question.id} question={question} team={this.props.team}/>
+                return <QnACrudItemComponent key={question.id} crudItem={question} teamId={this.props.team.id}
+                                             crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}/>
             });
         }
 
@@ -46,11 +50,11 @@ class QnATeamHomePageComponent extends Component {
                                 </Grid.Column>
                                 <Grid.Column width={10}>
                                     <div className={styles.questionListSearchBtnPanel}>
-                                        <Button as='div' labelPosition='right' size='mini'>
-                                            <Button color='blue' size='mini'>Newest</Button>
-                                            <Label as='a' basic color='blue' pointing='left'>
-                                                2,048
-                                            </Label>
+                                        <Button onClick={() => Router.push(`/teams/${this.props.team.id}/questions/new`)} as='div' icon primary
+                                                labelPosition='left'
+                                                size='mini'>
+                                            <Icon name='lightbulb'/>
+                                            Ask a Question
                                         </Button>
                                         <Button as='div' labelPosition='right' size='mini'>
                                             <Button basic color='green' size='mini'>Active</Button>
