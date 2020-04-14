@@ -20,57 +20,14 @@ class QnATeamHomePageComponent extends Component {
 
     render() {
 
-        let questionList;
+        let questionListItems;
 
         if (this.state.questions.length === 0) {
-            questionList = <Grid.Column width={9}>
-                <Divider/>
-                <QnAFluidParagraphPlaceholderListComponent/>
-            </Grid.Column>
+            questionListItems = <QnAFluidParagraphPlaceholderListComponent/>
         } else {
-
-            const questionListItems = this.state.questions.map(question => {
+            questionListItems = this.state.questions.map(question => {
                 return <QnAQuestionComponent key={question.id} question={question} team={this.props.team}/>
             });
-
-            questionList = <Grid.Column width={9}>
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column width={6}>
-                            <h3>3,829 questions found</h3>
-                        </Grid.Column>
-                        <Grid.Column width={10}>
-                            <div className={styles.questionListSearchBtnPanel}>
-                                <Button as='div' labelPosition='right' size='mini'>
-                                    <Button color='blue' size='mini'>Newest</Button>
-                                    <Label as='a' basic color='blue' pointing='left'>
-                                        2,048
-                                    </Label>
-                                </Button>
-                                <Button as='div' labelPosition='right' size='mini'>
-                                    <Button basic color='green' size='mini'>Active</Button>
-                                    <Label as='a' basic color='green' pointing='left'>
-                                        712
-                                    </Label>
-                                </Button>
-                                <Button as='div' labelPosition='right' size='mini'>
-                                    <Button basic color='red' size='mini'>Unanswered</Button>
-                                    <Label as='a' basic color='red' pointing='left'>
-                                        1,296
-                                    </Label>
-                                </Button>
-                                <Button icon size='mini'>
-                                    <Icon name='filter'/>
-                                </Button>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Divider/>
-                <Item.Group divided>
-                    {questionListItems}
-                </Item.Group>
-            </Grid.Column>;
         }
 
         return (
@@ -82,7 +39,44 @@ class QnATeamHomePageComponent extends Component {
                         <QnATeamDescriptionCardComponent team={this.props.team}/>
                     </Grid.Column>
 
-                    {questionList}
+                    <Grid.Column width={9}>
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column width={6}>
+                                    <h3>3,829 questions found</h3>
+                                </Grid.Column>
+                                <Grid.Column width={10}>
+                                    <div className={styles.questionListSearchBtnPanel}>
+                                        <Button as='div' labelPosition='right' size='mini'>
+                                            <Button color='blue' size='mini'>Newest</Button>
+                                            <Label as='a' basic color='blue' pointing='left'>
+                                                2,048
+                                            </Label>
+                                        </Button>
+                                        <Button as='div' labelPosition='right' size='mini'>
+                                            <Button basic color='green' size='mini'>Active</Button>
+                                            <Label as='a' basic color='green' pointing='left'>
+                                                712
+                                            </Label>
+                                        </Button>
+                                        <Button as='div' labelPosition='right' size='mini'>
+                                            <Button basic color='red' size='mini'>Unanswered</Button>
+                                            <Label as='a' basic color='red' pointing='left'>
+                                                1,296
+                                            </Label>
+                                        </Button>
+                                        <Button icon size='mini'>
+                                            <Icon name='filter'/>
+                                        </Button>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                        <Divider/>
+                        <Item.Group divided>
+                            {questionListItems}
+                        </Item.Group>
+                    </Grid.Column>
 
                     <Grid.Column width={4}>
                         <QnARecentActivityListComponent team={this.props.team}/>
