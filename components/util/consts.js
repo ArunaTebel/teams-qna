@@ -163,7 +163,7 @@ export default {
 
         QnAPaginationComponent: {
             pageSize: {
-                teamQuestionList: 10
+                default: 10
             }
         }
     }

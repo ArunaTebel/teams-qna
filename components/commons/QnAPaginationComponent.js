@@ -31,7 +31,10 @@ export default class QnAPaginationComponent extends Component {
 
     render() {
         const calculatedTotalPages = Math.ceil(parseInt(this.props.totalItems, 10) / parseInt(this.props.pageSize, 10));
-        const totalPages = this.props.totalPages ? this.props.totalPages : Math.max(1, calculatedTotalPages);
+        const totalPages = this.props.totalPages ? parseInt(this.props.totalPages, 10) : Math.max(1, calculatedTotalPages);
+        if (!totalPages || totalPages === 1) {
+            return [];
+        }
         return (
             <Pagination
                 activePage={this.props.activePage}

@@ -234,14 +234,15 @@ export default {
      *
      * @param req
      * @param answerId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchAnswerComments: async (req, answerId) => {
+    fetchAnswerComments: async (req, answerId, query = '') => {
         let response;
         if (req) {
-            response = await ArchQnaApiService.fetchAnswerComments(req, answerId);
+            response = await ArchQnaApiService.fetchAnswerComments(req, answerId, query);
         } else {
-            response = await (await http.get(`/api/answers/${answerId}/comments/list`)).json();
+            response = await (await http.get(`/api/answers/${answerId}/comments/list/?${query}`)).json();
         }
         return response;
     },
@@ -251,14 +252,15 @@ export default {
      *
      * @param req
      * @param questionId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchQuestionComments: async (req, questionId) => {
+    fetchQuestionComments: async (req, questionId, query = '') => {
         let response;
         if (req) {
-            response = await ArchQnaApiService.fetchQuestionComments(req, questionId);
+            response = await ArchQnaApiService.fetchQuestionComments(req, questionId, query);
         } else {
-            response = await (await http.get(`/api/questions/${questionId}/comments/list`)).json();
+            response = await (await http.get(`/api/questions/${questionId}/comments/list/?${query}`)).json();
         }
         return response;
     },

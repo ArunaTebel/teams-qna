@@ -314,10 +314,11 @@ export default {
      *
      * @param req
      * @param questionId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchQuestionComments: async (req, questionId) => {
-        return await doGet(`${C.API_PATH}/questions/${questionId}/comments/`, req).then(async r => {
+    fetchQuestionComments: async (req, questionId, query = '') => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/comments/?${query}`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -435,10 +436,11 @@ export default {
      *
      * @param req
      * @param answerId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchAnswerComments: async (req, answerId) => {
-        return await doGet(`${C.API_PATH}/answers/${answerId}/comments/`, req).then(async r => {
+    fetchAnswerComments: async (req, answerId, query = '') => {
+        return await doGet(`${C.API_PATH}/answers/${answerId}/comments/?${query}`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },

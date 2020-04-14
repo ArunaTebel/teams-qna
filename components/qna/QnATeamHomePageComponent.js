@@ -45,7 +45,7 @@ class QnATeamHomePageComponent extends Component {
             nextState.questions.currentList = questionsResponse.results;
             nextState.questions.currentPage = page;
             return nextState;
-        })
+        });
     }
 
     render() {
@@ -103,7 +103,7 @@ class QnATeamHomePageComponent extends Component {
                     <div className={styles.questionListPagination}>
                         <QnAPaginationComponent
                             totalItems={this.state.questions.totalCount}
-                            pageSize={C.components.QnAPaginationComponent.pageSize.teamQuestionList}
+                            pageSize={C.components.QnAPaginationComponent.pageSize.default}
                             activePage={this.state.questions.currentPage}
                             onPageChange={this.onPageChange}
                         />
