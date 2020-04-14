@@ -56,7 +56,7 @@ class ArchQnAQuestionPageComponent extends Component {
                 detailed={true}
                 onSaveCallback={this.onUpdate}
                 teamId={question.team}/>;
-            commentListComponent = <QnACommentListComponent questionId={question.id} collapsed={false}/>;
+            commentListComponent = <QnACommentListComponent questionId={question.id}/>;
             answersComponent = <QnAAnswerListComponent question={question}/>;
         }
 
