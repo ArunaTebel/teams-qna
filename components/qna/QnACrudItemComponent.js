@@ -195,7 +195,8 @@ export default class QnACrudItemComponent extends Component {
         }
 
         const content = detailed ? crudItem.content : Utils.strEllipsis(crudItem.content, C.components.QnACrudItemComponent.content_max_len);
-        const crudItemTimeStr = `Asked on ${Utils.getDateFromUTCTimeStr(crudItem.created_at)}`;
+        const subTitle = detailed ? crudItem.sub_title : Utils.strEllipsis(crudItem.sub_title, C.components.QnACrudItemComponent.sub_content_max_len);
+        const crudItemTimeStr = `${Utils.datetime.todatetime(crudItem.created_at)}`;
         const isEditMode = this.stateUtil.isEditMode(this);
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
         const isFormEditable = (isEditMode && crudItem.can_update) || isAddMode;
@@ -207,12 +208,11 @@ export default class QnACrudItemComponent extends Component {
 
         if (this.isQuestionType()) {
             crudItemName = <Item.Header key={'q_name'} as='a' href={crudItemUrl}>{crudItem.name}</Item.Header>;
-            crudItemSubTitle = <Item.Meta key={'q_sub_title'}><span>{crudItem.sub_title}</span><span
-                className={styles.questionTime}>{crudItemTimeStr}</span></Item.Meta>;
+            crudItemSubTitle = <Item.Meta key={'q_sub_title'}><span>{subTitle}</span></Item.Meta>;
             questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={crudItem.tag_details}/>;
         }
 
-        let userDetails = <QnAUserDetailsComponent user={crudItem.owner}/>;
+        let userDetails = <QnAUserDetailsComponent user={crudItem.owner} datetime={crudItemTimeStr}/>;
         let crudItemContent = <Item.Description key={'q_content'}>
             <QnAMarkDownComponent source={content}/>
         </Item.Description>;

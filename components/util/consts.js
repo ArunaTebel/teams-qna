@@ -55,6 +55,7 @@ export default {
 
         QnACrudItemComponent: {
             content_max_len: 200,
+            sub_content_max_len: 60,
             crudItemTypes: {question: 'Question', answer: 'Answer'},
             modes: {add: 'add', edit: 'edit', view: 'view'},
             formConfig: {

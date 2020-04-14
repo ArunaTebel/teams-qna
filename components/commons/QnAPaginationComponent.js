@@ -4,19 +4,6 @@ import {Pagination} from 'semantic-ui-react'
 
 export default class QnAPaginationComponent extends Component {
 
-    static propTypes = {
-        totalItems: PropTypes.string,
-        pageSize: PropTypes.string,
-        activePage: PropTypes.string,
-        boundaryRange: PropTypes.string,
-        siblingRange: PropTypes.string,
-        totalPages: PropTypes.string,
-        showEllipsis: PropTypes.boolean,
-        showFirstAndLastNav: PropTypes.boolean,
-        showPreviousAndNextNav: PropTypes.boolean,
-        size: PropTypes.string
-    };
-
     static defaultProps = {
         totalItems: 1,
         pageSize: 10,

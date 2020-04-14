@@ -61,7 +61,7 @@ export default class QnACommentComponent extends Component {
                 <Comment.Content>
                     <Comment.Author as='a'>{comment.owner.full_name}</Comment.Author>
                     <Comment.Metadata>
-                        <div>{Utils.getDateFromUTCTimeStr(comment.created_at)}</div>
+                        <div>{Utils.datetime.todatetime(comment.created_at)}</div>
                     </Comment.Metadata>
                     <Comment.Text>{comment.content}</Comment.Text>
                     <Comment.Actions>
