@@ -17,7 +17,6 @@ class QnATeamHomePageComponent extends Component {
     async componentDidMount() {
         const questions = await API.fetchTeamQuestions(false, this.props.team.id);
         const teamTags = await API.fetchTeamTags(false, this.props.teamId);
-        console.log(questions);
         this.setState({
             questions: questions.results,
             tags: teamTags,
