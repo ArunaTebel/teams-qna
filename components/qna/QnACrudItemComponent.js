@@ -4,7 +4,7 @@ import styles from './styles/QnAQuestionComponent.module.scss'
 import C from './../util/consts'
 import Utils from './../util/utils'
 import QnAQuestionTagsComponent from "./QnAQuestionTagsComponent";
-import QnAQuestionStatsComponent from "./QnAQuestionStatsComponent";
+import QnACrudItemStatsComponent from "./QnACrudItemStatsComponent";
 import QnAUserDetailsComponent from "./QnAUserDetailsComponent";
 import QnACrudItemComponentStateUtil from "./stateutils/QnACrudItemComponentStateUtil";
 import QnAValidatableFormComponent from "./QnAValidatableFormComponent";
@@ -12,7 +12,7 @@ import _ from "lodash";
 import API from "../util/API";
 import toasts from "../util/toasts";
 import loader from "../util/loader";
-import QnAAnswerStatsComponent from "./QnAAnswerStatsComponent";
+import QnAMarkDownComponent from "../commons/qna-mde/QnAMarkDownComponent";
 
 export default class QnACrudItemComponent extends Component {
 
@@ -195,23 +195,22 @@ export default class QnACrudItemComponent extends Component {
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
         const isFormEditable = (isEditMode && crudItem.can_update) || isAddMode;
 
-        let crudItemStats = '';
+        let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType}/>;
         let crudItemName = '';
         let crudItemSubTitle = '';
         let questionTags = '';
 
         if (this.isQuestionType()) {
-            crudItemStats = <QnAQuestionStatsComponent question={crudItem}/>;
             crudItemName = <Item.Header key={'q_name'} as='a' href={crudItemUrl}>{crudItem.name}</Item.Header>;
             crudItemSubTitle = <Item.Meta key={'q_sub_title'}><span>{crudItem.sub_title}</span><span
                 className={styles.questionTime}>{crudItemTimeStr}</span></Item.Meta>;
             questionTags = <QnAQuestionTagsComponent key={'q_tags'} tags={crudItem.tag_details}/>;
-        } else if (this.isAnswerType()) {
-            crudItemStats = <QnAAnswerStatsComponent answer={crudItem}/>;
         }
 
         let userDetails = <QnAUserDetailsComponent user={crudItem.owner}/>;
-        let crudItemContent = <Item.Description key={'q_content'}>{content}</Item.Description>;
+        let crudItemContent = <Item.Description key={'q_content'}>
+            <QnAMarkDownComponent source={content}/>
+        </Item.Description>;
 
         let crudItemSubComponents = [crudItemName, crudItemSubTitle, crudItemContent, questionTags];
 
@@ -274,6 +273,7 @@ export default class QnACrudItemComponent extends Component {
                         </Button.Group>
                     </div>
                 </Item.Extra>
+                <QnAMarkDownComponent source={this.stateUtil.getFormFieldValue(this, this.getFormFieldName('content'))}/>
             </QnAValidatableFormComponent>
         }
 
