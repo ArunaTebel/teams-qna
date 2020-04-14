@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 .questionItem {
   height: 180px;
 }
@@ -36,4 +40,20 @@
 .questionItemStatsGridRowDiv {
   text-align: center;
   padding-left: 0 !important;
+}
+
+.questionActions {
+  margin-top: -5px !important;
+}
+
+.questionNameInput {
+  width: 100% !important;
+}
+
+.questionSubTitleInput {
+  width: 100%;
+}
+
+.formButtonGroup {
+  float: right;
 }
