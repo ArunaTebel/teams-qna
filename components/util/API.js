@@ -74,14 +74,15 @@ export default {
      *
      * @param req
      * @param teamId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchTeamQuestions: async (req, teamId) => {
+    fetchTeamQuestions: async (req, teamId, query = '') => {
         let response;
         if (req) {
-            response = await ArchQnaApiService.fetchTeamQuestions(req, teamId);
+            response = await ArchQnaApiService.fetchTeamQuestions(req, teamId, query);
         } else {
-            response = await (await http.get(`/api/teams/${teamId}/questions/list`)).json();
+            response = await (await http.get(`/api/teams/${teamId}/questions/list?${query}`)).json();
         }
         return response;
     },

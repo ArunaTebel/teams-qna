@@ -181,10 +181,11 @@ export default {
      *
      * @param req
      * @param teamId
+     * @param query
      * @returns {Promise<*|void>}
      */
-    fetchTeamQuestions: async (req, teamId) => {
-        return await doGet(`${C.API_PATH}/teams/${teamId}/questions/`, req).then(async r => {
+    fetchTeamQuestions: async (req, teamId, query = '') => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/questions/?${query}`, req).then(async r => {
             return await respondIfAuthorized(r, []);
         }).catch(async error => await handleApiError(error));
     },

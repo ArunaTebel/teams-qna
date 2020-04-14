@@ -194,7 +194,7 @@ export default class QnACrudItemComponent extends Component {
             crudItemUrl = !detailed ? `/teams/${this.props.teamId}/questions/${crudItem.id}` : '';
         }
 
-        const content = detailed ? crudItem.content : Utils.strEllipsis(crudItem.content, C.crudItem.content_max_len);
+        const content = detailed ? crudItem.content : Utils.strEllipsis(crudItem.content, C.components.QnACrudItemComponent.content_max_len);
         const crudItemTimeStr = `Asked on ${Utils.getDateFromUTCTimeStr(crudItem.created_at)}`;
         const isEditMode = this.stateUtil.isEditMode(this);
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);

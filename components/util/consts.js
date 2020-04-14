@@ -4,9 +4,7 @@ export default {
     crudItem: {
         content_max_len: 200
     },
-    team: {
-        description_max_len: 200
-    },
+
     messages: {
         success: "Success",
         addSuccess: "Successfully Added!",
@@ -14,7 +12,14 @@ export default {
         deleteSuccess: "Successfully Deleted!",
         error: "Error occurred",
     },
+
     components: {
+
+        QnAHomePageComponent: {
+            team: {
+                description_max_len: 200
+            },
+        },
 
         QnAHorizontalLoaderComponent: {
             events: {loading: 'qna-horizontal-loader-loading'}
@@ -47,7 +52,9 @@ export default {
                 }
             }
         },
+
         QnACrudItemComponent: {
+            content_max_len: 200,
             crudItemTypes: {question: 'Question', answer: 'Answer'},
             modes: {add: 'add', edit: 'edit', view: 'view'},
             formConfig: {
@@ -151,6 +158,12 @@ export default {
                         },
                     }
                 },
+            }
+        },
+
+        QnAPaginationComponent: {
+            pageSize: {
+                teamQuestionList: 10
             }
         }
     }

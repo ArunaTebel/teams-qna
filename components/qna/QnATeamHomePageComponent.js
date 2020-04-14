@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Grid, Item, Divider, Button, Label, Icon} from 'semantic-ui-react'
+import {Grid, Item, Divider, Button, Label, Icon, Statistic} from 'semantic-ui-react'
 import QnATeamDescriptionCardComponent from "./QnATeamDescriptionCardComponent";
 import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
@@ -8,20 +8,44 @@ import API from "../util/API";
 import QnACrudItemComponent from "./QnACrudItemComponent";
 import Router from 'next/router'
 import C from "../util/consts";
-import _ from "lodash";
+import QnAPaginationComponent from "../commons/QnAPaginationComponent";
 
 class QnATeamHomePageComponent extends Component {
 
-    state = {questions: [], tags: [], activityLogs: [], isLoading: true};
+    state = {questions: {totalCount: 0, currentList: [], currentPage: 1}, searchQuery: '', tags: [], activityLogs: [], isLoading: true};
+
+    constructor(props) {
+        super(props);
+        this.loadPage = this.loadPage.bind(this);
+        this.onPageChange = this.onPageChange.bind(this);
+    }
+
 
     async componentDidMount() {
-        const questions = await API.fetchTeamQuestions(false, this.props.team.id);
-        const teamTags = await API.fetchTeamTags(false, this.props.teamId);
-        this.setState({
-            questions: questions.results,
-            tags: teamTags,
-            isLoading: false,
+        this.loadPage().then(async () => {
+            const teamTags = await API.fetchTeamTags(false, this.props.team.id);
+            this.setState({
+                tags: teamTags,
+                isLoading: false,
+            });
         });
+    }
+
+    async onPageChange(e, pageData) {
+        this.setState({isLoading: true});
+        await this.loadPage(pageData.activePage);
+        this.setState({isLoading: false});
+    }
+
+    async loadPage(page = 1) {
+        const questionsResponse = await API.fetchTeamQuestions(false, this.props.team.id, `page=${page}`);
+        this.setState((prevState) => {
+            const nextState = prevState;
+            nextState.questions.totalCount = questionsResponse.count;
+            nextState.questions.currentList = questionsResponse.results;
+            nextState.questions.currentPage = page;
+            return nextState;
+        })
     }
 
     render() {
@@ -34,7 +58,7 @@ class QnATeamHomePageComponent extends Component {
                 <QnAFluidParagraphPlaceholderListComponent/>
             </Grid.Column>
         } else {
-            const questionListItems = this.state.questions.map(question => {
+            const questionListItems = this.state.questions.currentList.map(question => {
                 return <QnACrudItemComponent key={question.id} crudItem={question} teamId={this.props.team.id} specificData={{tags: this.state.tags}}
                                              crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}/>
             });
@@ -43,7 +67,7 @@ class QnATeamHomePageComponent extends Component {
                 <Grid>
                     <Grid.Row>
                         <Grid.Column width={6}>
-                            <h3>3,829 questions found</h3>
+                            <h3>{`${this.state.questions.totalCount} questions found`}</h3>
                         </Grid.Column>
                         <Grid.Column width={10}>
                             <div className={styles.questionListSearchBtnPanel}>
@@ -75,12 +99,21 @@ class QnATeamHomePageComponent extends Component {
                 <Item.Group divided>
                     {questionListItems}
                 </Item.Group>
+                <div className={styles.questionListPaginationContainer}>
+                    <div className={styles.questionListPagination}>
+                        <QnAPaginationComponent
+                            totalItems={this.state.questions.totalCount}
+                            pageSize={C.components.QnAPaginationComponent.pageSize.teamQuestionList}
+                            activePage={this.state.questions.currentPage}
+                            onPageChange={this.onPageChange}
+                        />
+                    </div>
+                </div>
             </Grid.Column>;
         }
 
         return (
             <Grid celled='internally'>
-
                 <Grid.Row>
 
                     <Grid.Column width={3}>
