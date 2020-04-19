@@ -11,6 +11,9 @@ export default class QnATopMenuComponent extends Component {
         fetch('/api/getAuthData').then(
             async r => {
                 const authData = await r.json();
+                if (!authData.isLoggedIn && window.location.pathname !== '/') {
+                    window.location = '/';
+                }
                 this.setState({
                     isLoggedIn: authData.isLoggedIn,
                     authorizeUrl: authData.authorizeUrl,
