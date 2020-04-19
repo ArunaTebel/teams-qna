@@ -146,7 +146,7 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchUser: async (req) => {
-        return await doGet(`${C.API_BASE}/${C.API_BASE_AUTH_PATH}/current-user`, req).then(async r => {
+        return await doGet(`${C.API_BASE}/${C.API_BASE_AUTH_PATH}/current-user/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -171,7 +171,7 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchTeam: async (req, teamId) => {
-        return await doGet(`${C.API_PATH}/teams/${teamId}`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
@@ -264,7 +264,7 @@ export default {
      * @returns {Promise<*|void>}
      */
     fetchQuestion: async (req, questionId) => {
-        return await doGet(`${C.API_PATH}/questions/${questionId}`, req).then(async r => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/`, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },

@@ -37,4 +37,9 @@ export default {
     redirectAfterMills(url, milliseconds) {
         setTimeout(async () => await Router.push(url), milliseconds);
     },
+
+    getCookieValue(name) {
+        const cookieMatches = document.cookie.match('(^|[^;]+)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return cookieMatches ? cookieMatches.pop() : '';
+    }
 }

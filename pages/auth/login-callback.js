@@ -7,7 +7,11 @@ export default class ArchQnALoginCallbackComponent extends Component {
     state = {};
 
     async componentDidMount() {
-        fetch(`/api/setAccessTokenCookie?code=${this.props.code}`).then(r => {
+        var parsedHash = new URLSearchParams(
+            window.location.hash.substr(1)
+        );
+
+        fetch(`/api/setAccessTokenCookie?access_token=${parsedHash.get('access_token')}`).then(r => {
             if (r.status === 200) {
                 window.location = '/';
             }
