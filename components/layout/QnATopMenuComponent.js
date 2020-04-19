@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Menu, Input, Dropdown} from 'semantic-ui-react'
 import styles from './styles/QnATopMenuComponent.module.scss'
 import fetch from "isomorphic-unfetch";
+import Router from "next/router";
 
 export default class QnATopMenuComponent extends Component {
 
@@ -47,10 +48,7 @@ export default class QnATopMenuComponent extends Component {
         return (
             <Menu pointing secondary>
                 <a href={'/'}><img alt='logo' className={styles.archTopMenuLogo} src='/img/logo-small.png'/></a>
-                <Menu.Item name='teams' active={activeItem === 'teams'} content='Teams' onClick={this.handleItemClick}/>
-                <Menu.Item name='tags' active={activeItem === 'tags'} content='Tags' onClick={this.handleItemClick}/>
-                <Menu.Item name='users' active={activeItem === 'users'} content='Users' onClick={this.handleItemClick}/>
-                <Menu.Item><Input icon='search' placeholder='Search...'/></Menu.Item>
+                <Menu.Item name='teams' active={activeItem === 'teams'} content='Teams' onClick={() => Router.push('/')}/>
                 <Menu.Menu position='right'>{userLink}</Menu.Menu>
             </Menu>
         )
