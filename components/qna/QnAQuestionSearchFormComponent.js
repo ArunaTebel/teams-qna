@@ -6,21 +6,24 @@ import QnAQuestionSearchFormComponentStateUtil from "./stateutils/QnAQuestionSea
 
 class QnAQuestionSearchFormComponent extends Component {
 
-    state = {
-        searchForm: {
-            values: {
-                content: '',
-                tags: [],
-            },
-            stateFlag: true
-        }
-    };
     stateUtil = new QnAQuestionSearchFormComponentStateUtil();
 
     constructor(props) {
         super(props);
         this.onFormFieldChange = this.onFormFieldChange.bind(this);
         this.onSearchFormSubmit = this.onSearchFormSubmit.bind(this);
+        this.onSearchFormReset = this.onSearchFormReset.bind(this);
+        const initialTags = props.initialValues.tags ? _.map(props.initialValues.tags.split(','), (tagId) => parseInt(tagId, 10)) : [];
+        this.state = {
+            searchForm: {
+                values: {
+                    content: props.initialValues.content,
+                    tags: initialTags,
+                },
+                stateFlag: true
+            }
+        };
+
     }
 
     onFormFieldChange(event, element) {
@@ -32,11 +35,17 @@ class QnAQuestionSearchFormComponent extends Component {
         this.props.onSearchFormSubmit(this.stateUtil.getFormValues(this));
     }
 
+    onSearchFormReset() {
+        this.stateUtil.setFormFieldValues(this, {content: '', tags: []});
+        this.props.onSearchFormReset();
+    }
+
     render() {
 
         const teamTagChoices = _.map(this.props.tags, (tag) => {
             return {key: tag.id, text: tag.name, value: tag.id}
         });
+        console.log(this.stateUtil.getFormFieldValue(this, 'tags'));
 
         return (
             <Grid style={{width: '100%'}}>
@@ -69,6 +78,7 @@ class QnAQuestionSearchFormComponent extends Component {
                             />
                             <Item.Extra>
                                 <Button basic color={'green'} size={'mini'}><Icon name='search'/>Search</Button>
+                                <Button basic size={'mini'} onClick={this.onSearchFormReset}>Reset</Button>
                             </Item.Extra>
                             <Divider/>
                         </QnAValidatableFormComponent>

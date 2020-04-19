@@ -11,18 +11,21 @@ import C from "../util/consts";
 import QnAPaginationComponent from "../commons/QnAPaginationComponent";
 import QnAQuestionSearchFormComponent from "./QnAQuestionSearchFormComponent";
 import commons from "../../utils/commons";
+import _ from "lodash";
 
 class QnATeamHomePageComponent extends Component {
 
+    defaultSearchFilters = {page: 1, content: '', tags: '', unanswered: false};
+
     state = {
-        questions: {totalCount: 0, currentList: [], currentPage: 1},
+        questions: {totalCount: 0, currentList: [], currentPage: 1, unansweredCount: 0},
         searchQuery: '',
         tags: [],
         activityLogs: [],
         isLoading: true,
         searchForm: {
             show: false,
-            filters: {page: 1, content: '', tags: ''}
+            filters: this.defaultSearchFilters
         }
     };
 
@@ -34,6 +37,10 @@ class QnATeamHomePageComponent extends Component {
         this.shallowUpdateUri = this.shallowUpdateUri.bind(this);
         this.convertSearchFiltersToUri = this.convertSearchFiltersToUri.bind(this);
         this.onSearchFormSubmit = this.onSearchFormSubmit.bind(this);
+        this.onSearchFormReset = this.onSearchFormReset.bind(this);
+        this.onUnAnsweredFilterClick = this.onUnAnsweredFilterClick.bind(this);
+        this.setFiltersAndSearch = this.setFiltersAndSearch.bind(this);
+        this.isFiltered = this.isFiltered.bind(this);
     }
 
 
@@ -50,29 +57,44 @@ class QnATeamHomePageComponent extends Component {
                 page: urlParams.page ? urlParams.page : 1,
                 content: urlParams.content ? urlParams.content : '',
                 tags: urlParams.tags ? urlParams.tags : '',
+                unanswered: urlParams.unanswered === 'true' ? urlParams.unanswered : false,
             };
             return nextState;
         }, this.searchQuestions);
     }
 
-    onSearchFormSubmit(searchFormValues) {
+    setFiltersAndSearch(filters) {
         this.setState((prevState) => {
             const nextState = prevState;
             nextState.isLoading = true;
-            nextState.searchForm.filters.page = 1;
-            nextState.searchForm.filters.content = searchFormValues.content;
-            nextState.searchForm.filters.tags = searchFormValues.tags && searchFormValues.tags.length > 0 ? searchFormValues.tags : '';
+            nextState.searchForm.filters = {...nextState.searchForm.filters, ...filters};
             return nextState;
         }, this.searchQuestions);
     }
 
+    onSearchFormSubmit(searchFormValues) {
+        this.setFiltersAndSearch({
+            page: 1,
+            content: searchFormValues.content,
+            tags: searchFormValues.tags && searchFormValues.tags.length > 0 ? searchFormValues.tags : ''
+        });
+    }
+
+    onSearchFormReset() {
+        this.setFiltersAndSearch(this.defaultSearchFilters);
+    }
+
+    onUnAnsweredFilterClick() {
+        this.setFiltersAndSearch({
+            page: 1,
+            unanswered: !this.state.searchForm.filters.unanswered,
+        });
+    }
+
     async onPageChange(e, pageData) {
-        this.setState((prevState) => {
-            const nextState = prevState;
-            nextState.isLoading = true;
-            nextState.searchForm.filters.page = pageData.activePage;
-            return nextState;
-        }, this.searchQuestions);
+        this.setFiltersAndSearch({
+            page: pageData.activePage,
+        });
     }
 
     async searchQuestions() {
@@ -82,6 +104,7 @@ class QnATeamHomePageComponent extends Component {
             nextState.isLoading = false;
             nextState.questions.totalCount = questionsResponse.count;
             nextState.questions.currentList = questionsResponse.results;
+            nextState.questions.unansweredCount = questionsResponse.metadata.unanswered_count;
             nextState.questions.currentPage = this.state.searchForm.filters.page;
             return nextState;
         }, async () => {
@@ -90,14 +113,22 @@ class QnATeamHomePageComponent extends Component {
     }
 
     convertSearchFiltersToUri() {
-        const searchFilters = this.state.searchForm.filters;
+        let searchFilters = JSON.stringify(this.state.searchForm.filters);
+        searchFilters = JSON.parse(searchFilters);
         if (!searchFilters.content) {
             delete searchFilters.content;
         }
         if (!searchFilters.tags) {
             delete searchFilters.tags;
         }
+        if (!searchFilters.unanswered) {
+            delete searchFilters.unanswered;
+        }
         return commons.jsonToUri(searchFilters);
+    }
+
+    isFiltered() {
+        return !_.isEqual(this.state.searchForm.filters, this.defaultSearchFilters);
     }
 
     async shallowUpdateUri() {
@@ -120,7 +151,9 @@ class QnATeamHomePageComponent extends Component {
         if (this.state.searchForm.show) {
             questionSearchForm = <Item.Group divided>
                 <Item>
-                    <QnAQuestionSearchFormComponent tags={this.state.tags} onSearchFormSubmit={this.onSearchFormSubmit}/>
+                    <QnAQuestionSearchFormComponent tags={this.state.tags} onSearchFormSubmit={this.onSearchFormSubmit}
+                                                    onSearchFormReset={this.onSearchFormReset}
+                                                    initialValues={this.state.searchForm.filters}/>
                 </Item>
             </Item.Group>;
         }
@@ -147,7 +180,8 @@ class QnATeamHomePageComponent extends Component {
                         <Grid>
                             <Grid.Row>
                                 <Grid.Column width={6}>
-                                    <h3>{`${this.state.questions.totalCount} questions found`}</h3>
+                                    <span className={styles.questionListTotalCountHeading}>{`${this.state.questions.totalCount} questions found`}</span>
+                                    <span className={styles.questionListFilteredIndicator}>{this.isFiltered() ? ' - [Filtered]' : ''}</span>
                                 </Grid.Column>
                                 <Grid.Column width={10}>
                                     <div className={styles.questionListSearchBtnPanel}>
@@ -158,15 +192,10 @@ class QnATeamHomePageComponent extends Component {
                                             Ask a Question
                                         </Button>
                                         <Button as='div' labelPosition='right' size='mini'>
-                                            <Button basic color='green' size='mini'>Active</Button>
-                                            <Label as='a' basic color='green' pointing='left'>
-                                                712
-                                            </Label>
-                                        </Button>
-                                        <Button as='div' labelPosition='right' size='mini'>
-                                            <Button basic color='red' size='mini'>Unanswered</Button>
+                                            <Button basic={!this.state.searchForm.filters.unanswered} color='red' size='mini'
+                                                    onClick={this.onUnAnsweredFilterClick}>Unanswered</Button>
                                             <Label as='a' basic color='red' pointing='left'>
-                                                1,296
+                                                {this.state.questions.unansweredCount}
                                             </Label>
                                         </Button>
                                         <Button icon size='mini' onClick={this.toggleSearchFormVisibility}>

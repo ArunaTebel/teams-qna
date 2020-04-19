@@ -11,6 +11,14 @@ export default class QnAQuestionSearchFormComponentStateUtil {
         });
     }
 
+    setFormFieldValues(comp, values) {
+        comp.setState((prevState) => {
+            const nextState = prevState;
+            nextState.searchForm.values = values;
+            return nextState;
+        });
+    }
+
     setFormFieldValue(comp, fieldName, value) {
         comp.setState((prevState) => {
             const nextState = prevState;

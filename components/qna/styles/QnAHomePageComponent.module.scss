@@ -6,10 +6,15 @@
   float: right;
 }
 
-.questionTotalCount {
-  float: left;
-  margin-top: 10px;
-  //font-weight: bold;
+.questionListTotalCountHeading {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.questionListFilteredIndicator {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: darkcyan;
 }
 
 .questionListPaginationContainer {
