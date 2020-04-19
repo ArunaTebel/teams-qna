@@ -14,7 +14,6 @@ export default class ArchQnALoginCallbackComponent extends Component {
         let data = new FormData();
         data.append("token", cookieUtils.extractAccessToken(ctx.req));
         data.append("client_id", C.OAUTH.client_id);
-        // data.append("client_secret", C.OAUTH.client_secret);
 
         const revokeTokenResponseStatus = await fetch(`${C.API_BASE}/o/revoke_token/`, {
             method: 'POST',
