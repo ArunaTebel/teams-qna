@@ -203,9 +203,9 @@ export default class QnACommentListComponent extends Component {
         this.stateUtil.setCommentListLoading(true);
         let commentsResponse;
         if (this.isQuestionComment()) {
-            commentsResponse = await API.fetchQuestionComments(false, this.props.questionId, `page=${page}`);
+            commentsResponse = await API.fetchQuestionComments(this.props.questionId, `page=${page}`);
         } else {
-            commentsResponse = await API.fetchAnswerComments(false, this.props.answerId, `page=${page}`);
+            commentsResponse = await API.fetchAnswerComments(this.props.answerId, `page=${page}`);
         }
         this.setState((prevState) => {
             const nextState = prevState;
@@ -234,9 +234,9 @@ export default class QnACommentListComponent extends Component {
         this.stateUtil.setIsCommentFormBusy(true);
         let comment;
         if (this.isQuestionComment()) {
-            comment = await API.fetchQuestionComment(false, commentId);
+            comment = await API.fetchQuestionComment(commentId);
         } else {
-            comment = await API.fetchAnswerComment(false, commentId);
+            comment = await API.fetchAnswerComment(commentId);
         }
         if (this.isACommentObj(comment)) {
             this.stateUtil.setCommentFormMode(this.formConfig.modes.edit);
@@ -252,9 +252,9 @@ export default class QnACommentListComponent extends Component {
         loader.show();
         let deletedCommentId;
         if (this.isQuestionComment()) {
-            deletedCommentId = await API.deleteQuestionComment(false, commentId);
+            deletedCommentId = await API.deleteQuestionComment(commentId);
         } else {
-            deletedCommentId = await API.deleteAnswerComment(false, commentId);
+            deletedCommentId = await API.deleteAnswerComment(commentId);
         }
         if (Utils.strings.numStrComp(commentId, deletedCommentId)) {
             toasts.showToast(C.messages.deleteSuccess);
@@ -298,12 +298,12 @@ export default class QnACommentListComponent extends Component {
     async addComment(commentContent) {
         let addCommentResponse;
         if (this.isQuestionComment()) {
-            addCommentResponse = await API.addQuestionComment(false, this.props.questionId, {
+            addCommentResponse = await API.addQuestionComment(this.props.questionId, {
                 question: this.props.questionId,
                 content: commentContent
             });
         } else {
-            addCommentResponse = await API.addAnswerComment(false, this.props.answerId, {
+            addCommentResponse = await API.addAnswerComment(this.props.answerId, {
                 answer: this.props.answerId,
                 content: commentContent
             });
@@ -314,11 +314,11 @@ export default class QnACommentListComponent extends Component {
     async updateComment(commentId, commentContent) {
         let updateCommentResponse;
         if (this.isQuestionComment()) {
-            updateCommentResponse = await API.updateQuestionComment(false, commentId, {
+            updateCommentResponse = await API.updateQuestionComment(commentId, {
                 content: commentContent
             });
         } else {
-            updateCommentResponse = await API.updateAnswerComment(false, commentId, {
+            updateCommentResponse = await API.updateAnswerComment(commentId, {
                 content: commentContent
             });
         }

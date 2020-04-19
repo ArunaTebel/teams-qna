@@ -21,7 +21,6 @@ class ArchQnAQuestionPageComponent extends Component {
         super(props);
         this.onUpdate = this.onUpdate.bind(this);
         this.fetchQuestion = this.fetchQuestion.bind(this);
-        this.fetchTeam = this.fetchTeam.bind(this);
     }
 
     static async getInitialProps(ctx) {
@@ -31,17 +30,13 @@ class ArchQnAQuestionPageComponent extends Component {
     }
 
     async componentDidMount() {
-        const question = await API.fetchQuestion(false, this.props.questionId);
-        const team = await API.fetchTeam(false, question.team);
+        const question = await API.fetchQuestion(this.props.questionId);
+        const team = await API.fetchTeam(question.team);
         this.setState({question: await this.fetchQuestion(), team: team});
     }
 
     async fetchQuestion() {
-        return await API.fetchQuestion(false, this.props.questionId);
-    }
-
-    async fetchTeam() {
-        return await API.fetchTeam(false, this.state.question.team);
+        return await API.fetchQuestion(this.props.questionId);
     }
 
     async onUpdate() {

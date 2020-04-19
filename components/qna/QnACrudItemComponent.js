@@ -84,7 +84,7 @@ export default class QnACrudItemComponent extends Component {
         if (this.props.specificData) {
             teamTags = this.props.specificData.tags
         } else {
-            teamTags = await API.fetchTeamTags(false, this.props.teamId);
+            teamTags = await API.fetchTeamTags(this.props.teamId);
         }
         const teamTagChoices = _.map(teamTags, (tag) => {
             return {key: tag.id, text: tag.name, value: tag.id}
@@ -105,7 +105,7 @@ export default class QnACrudItemComponent extends Component {
         if (crudItemId) {
             this.stateUtil.closeDeleteCrudItemModal(this);
             const deleteCrudItemApiFunc = `delete${this.props.crudItemType}`;
-            let deletedCrudItemId = await API[deleteCrudItemApiFunc](false, crudItemId);
+            let deletedCrudItemId = await API[deleteCrudItemApiFunc](crudItemId);
             if (Utils.strings.numStrComp(crudItemId, deletedCrudItemId)) {
                 toasts.showToast(C.messages.deleteSuccess);
             } else {
@@ -125,7 +125,7 @@ export default class QnACrudItemComponent extends Component {
         if (_.isEmpty(validationErrors)) {
             let savedCrudItem;
             if (this.stateUtil.isEditMode(this)) {
-                savedCrudItem = await API[`update${this.props.crudItemType}`](false, this.props.crudItem.id, this.stateUtil.getFormValues(this));
+                savedCrudItem = await API[`update${this.props.crudItemType}`](this.props.crudItem.id, this.stateUtil.getFormValues(this));
             } else {
                 let newCrudItemData;
                 if (this.isQuestionType()) {
@@ -133,7 +133,7 @@ export default class QnACrudItemComponent extends Component {
                 } else if (this.isAnswerType()) {
                     newCrudItemData = {...this.stateUtil.getFormValues(this), question: this.props.questionId};
                 }
-                savedCrudItem = await API[`add${this.props.crudItemType}`](false, newCrudItemData);
+                savedCrudItem = await API[`add${this.props.crudItemType}`](newCrudItemData);
             }
             this.afterCrudItemSave(savedCrudItem);
         } else {

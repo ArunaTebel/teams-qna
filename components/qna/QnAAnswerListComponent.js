@@ -28,7 +28,7 @@ export default class QnAAnswerListComponent extends Component {
     }
 
     async componentDidMount() {
-        const answers = await API.fetchQuestionAnswers(false, this.props.question.id);
+        const answers = await API.fetchQuestionAnswers(this.props.question.id);
         this.setState({
             answers: answers,
             loading: false

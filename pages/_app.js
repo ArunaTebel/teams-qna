@@ -5,7 +5,7 @@ import {toast} from 'react-toastify';
 
 export default function App({Component, pageProps}) {
     toast.configure({
-        position: "bottom-left",
+        position: "top-right",
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,

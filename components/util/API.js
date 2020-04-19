@@ -1,5 +1,4 @@
 import ArchQnaApiService from "../../pages/api/utils/archQnaApiService";
-import http from "./httpUtil";
 import apiUtils from "./apiUtils";
 
 export default {
@@ -10,10 +9,8 @@ export default {
      * @param req
      * @returns {Promise<*|void>}
      */
-    fetchUser: async (req) => {
-        let response;
-        response = await ArchQnaApiService.fetchUser(req ? req : apiUtils.getProxyRequestWithTokenHeaders());
-        return response;
+    fetchUser: async (req = false) => {
+        return await ArchQnaApiService.fetchUser(req ? req : apiUtils.getProxyRequestWithTokenHeaders());
     },
 
     /**
@@ -22,10 +19,8 @@ export default {
      * @param req
      * @returns {Promise<*|void>}
      */
-    fetchMyTeams: async (req) => {
-        let response;
-        response = await ArchQnaApiService.fetchMyTeams(req ? req : apiUtils.getProxyRequestWithTokenHeaders());
-        return response;
+    fetchMyTeams: async (req = false) => {
+        return await ArchQnaApiService.fetchMyTeams(req ? req : apiUtils.getProxyRequestWithTokenHeaders());
     },
 
     /**
@@ -35,10 +30,8 @@ export default {
      * @param teamId
      * @returns {Promise<*|void>}
      */
-    fetchTeam: async (req, teamId) => {
-        let response;
-        response = await ArchQnaApiService.fetchTeam(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId);
-        return response;
+    fetchTeam: async (teamId, req = false) => {
+        return await ArchQnaApiService.fetchTeam(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId);
     },
 
     /**
@@ -48,7 +41,7 @@ export default {
      * @param teamId
      * @returns {Promise<*|void>}
      */
-    fetchTeamTags: async (req, teamId) => {
+    fetchTeamTags: async (teamId, req = false) => {
         return await ArchQnaApiService.fetchTeamTags(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId);
     },
 
@@ -60,10 +53,8 @@ export default {
      * @param query
      * @returns {Promise<*|void>}
      */
-    fetchTeamQuestions: async (req, teamId, query = '') => {
-        let response;
-        response = await ArchQnaApiService.fetchTeamQuestions(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId, query);
-        return response;
+    fetchTeamQuestions: async (teamId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchTeamQuestions(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId, query);
     },
 
     /**
@@ -73,10 +64,8 @@ export default {
      * @param questionId
      * @returns {Promise<*|void>}
      */
-    fetchQuestion: async (req, questionId) => {
-        let response;
-        response = await ArchQnaApiService.fetchQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
-        return response;
+    fetchQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.fetchQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
     },
 
     /**
@@ -87,10 +76,8 @@ export default {
      * @param questionData
      * @returns {Promise<*|void>}
      */
-    updateQuestion: async (req, questionId, questionData) => {
-        let response;
-        response = await ArchQnaApiService.updateQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, questionData);
-        return response;
+    updateQuestion: async (questionId, questionData, req = false) => {
+        return await ArchQnaApiService.updateQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, questionData);
     },
 
     /**
@@ -100,10 +87,8 @@ export default {
      * @param questionData
      * @returns {Promise<*|void>}
      */
-    addQuestion: async (req, questionData) => {
-        let response;
-        response = await ArchQnaApiService.addQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionData);
-        return response;
+    addQuestion: async (questionData, req = false) => {
+        return await ArchQnaApiService.addQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionData);
     },
 
     /**
@@ -113,9 +98,8 @@ export default {
      * @param questionId
      * @returns {Promise<*|void>}
      */
-    deleteQuestion: async (req, questionId) => {
-        let response;
-        response = await ArchQnaApiService.deleteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    deleteQuestion: async (questionId, req = false) => {
+        let response = await ArchQnaApiService.deleteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
         if (response.status === 204) {
             return questionId;
         }
@@ -128,10 +112,8 @@ export default {
      * @param questionId
      * @returns {Promise<*|void>}
      */
-    fetchQuestionAnswers: async (req, questionId) => {
-        let response;
-        response = await ArchQnaApiService.fetchQuestionAnswers(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
-        return response;
+    fetchQuestionAnswers: async (questionId, req = false) => {
+        return await ArchQnaApiService.fetchQuestionAnswers(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
     },
 
     /**
@@ -141,10 +123,8 @@ export default {
      * @param answerData
      * @returns {Promise<*|void>}
      */
-    addAnswer: async (req, answerData) => {
-        let response;
-        response = await ArchQnaApiService.addAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerData);
-        return response;
+    addAnswer: async (answerData, req = false) => {
+        return await ArchQnaApiService.addAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerData);
     },
 
     /**
@@ -155,10 +135,8 @@ export default {
      * @param answerData
      * @returns {Promise<*|void>}
      */
-    updateAnswer: async (req, answerId, answerData) => {
-        let response;
-        response = await ArchQnaApiService.updateAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, answerData);
-        return response;
+    updateAnswer: async (answerId, answerData, req = false) => {
+        return await ArchQnaApiService.updateAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, answerData);
     },
 
     /**
@@ -168,9 +146,8 @@ export default {
      * @param answerId
      * @returns {Promise<*|void>}
      */
-    deleteAnswer: async (req, answerId) => {
-        let response;
-        response = await ArchQnaApiService.deleteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    deleteAnswer: async (answerId, req = false) => {
+        let response = await ArchQnaApiService.deleteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
         if (response.status === 204) {
             return answerId;
         }
@@ -184,10 +161,8 @@ export default {
      * @param query
      * @returns {Promise<*|void>}
      */
-    fetchAnswerComments: async (req, answerId, query = '') => {
-        let response;
-        response = await ArchQnaApiService.fetchAnswerComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, query);
-        return response;
+    fetchAnswerComments: async (answerId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchAnswerComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, query);
     },
 
     /**
@@ -198,10 +173,8 @@ export default {
      * @param query
      * @returns {Promise<*|void>}
      */
-    fetchQuestionComments: async (req, questionId, query = '') => {
-        let response;
-        response = await ArchQnaApiService.fetchQuestionComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, query);
-        return response;
+    fetchQuestionComments: async (questionId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchQuestionComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, query);
     },
 
     /**
@@ -211,10 +184,8 @@ export default {
      * @param questionCommentId
      * @returns {Promise<*|void>}
      */
-    fetchQuestionComment: async (req, questionCommentId) => {
-        let response;
-        response = await ArchQnaApiService.fetchQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId);
-        return response;
+    fetchQuestionComment: async (questionCommentId, req = false) => {
+        return await ArchQnaApiService.fetchQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId);
     },
 
     /**
@@ -224,10 +195,8 @@ export default {
      * @param answerCommentId
      * @returns {Promise<*|void>}
      */
-    fetchAnswerComment: async (req, answerCommentId) => {
-        let response;
-        response = await ArchQnaApiService.fetchAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId);
-        return response;
+    fetchAnswerComment: async (answerCommentId, req = false) => {
+        return await ArchQnaApiService.fetchAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId);
     },
 
     /**
@@ -238,10 +207,8 @@ export default {
      * @param commentData
      * @returns {Promise<*|void>}
      */
-    addQuestionComment: async (req, questionId, commentData) => {
-        let response;
-        response = await ArchQnaApiService.addQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, commentData);
-        return response;
+    addQuestionComment: async (questionId, commentData, req = false) => {
+        return await ArchQnaApiService.addQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, commentData);
     },
 
     /**
@@ -252,10 +219,8 @@ export default {
      * @param commentData
      * @returns {Promise<*|void>}
      */
-    addAnswerComment: async (req, answerId, commentData) => {
-        let response;
-        response = await ArchQnaApiService.addAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, commentData);
-        return response;
+    addAnswerComment: async (answerId, commentData, req = false) => {
+        return await ArchQnaApiService.addAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId, commentData);
     },
 
     /**
@@ -266,10 +231,8 @@ export default {
      * @param commentData
      * @returns {Promise<*|void>}
      */
-    updateQuestionComment: async (req, questionCommentId, commentData) => {
-        let response;
-        response = await ArchQnaApiService.updateQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId, commentData);
-        return response;
+    updateQuestionComment: async (questionCommentId, commentData, req = false) => {
+        return await ArchQnaApiService.updateQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId, commentData);
     },
 
     /**
@@ -280,10 +243,8 @@ export default {
      * @param commentData
      * @returns {Promise<*|void>}
      */
-    updateAnswerComment: async (req, answerCommentId, commentData) => {
-        let response;
-        response = await ArchQnaApiService.updateAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId, commentData);
-        return response;
+    updateAnswerComment: async (answerCommentId, commentData, req = false) => {
+        return await ArchQnaApiService.updateAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId, commentData);
     },
 
     /**
@@ -293,9 +254,8 @@ export default {
      * @param questionCommentId
      * @returns {Promise<*|void>}
      */
-    deleteQuestionComment: async (req, questionCommentId) => {
-        let response;
-        response = await ArchQnaApiService.deleteQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId);
+    deleteQuestionComment: async (questionCommentId, req = false) => {
+        let response = await ArchQnaApiService.deleteQuestionComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionCommentId);
         if (response.status === 204) {
             return questionCommentId;
         }
@@ -308,9 +268,8 @@ export default {
      * @param answerCommentId
      * @returns {Promise<*|void>}
      */
-    deleteAnswerComment: async (req, answerCommentId) => {
-        let response;
-        response = await ArchQnaApiService.deleteAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId);
+    deleteAnswerComment: async (answerCommentId, req = false) => {
+        let response = await ArchQnaApiService.deleteAnswerComment(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerCommentId);
         if (response.status === 204) {
             return answerCommentId;
         }

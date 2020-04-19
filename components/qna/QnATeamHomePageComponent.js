@@ -23,7 +23,7 @@ class QnATeamHomePageComponent extends Component {
 
     async componentDidMount() {
         this.loadPage().then(async () => {
-            const teamTags = await API.fetchTeamTags(false, this.props.team.id);
+            const teamTags = await API.fetchTeamTags(this.props.team.id);
             this.setState({
                 tags: teamTags,
                 isLoading: false,
@@ -38,7 +38,7 @@ class QnATeamHomePageComponent extends Component {
     }
 
     async loadPage(page = 1) {
-        const questionsResponse = await API.fetchTeamQuestions(false, this.props.team.id, `page=${page}`);
+        const questionsResponse = await API.fetchTeamQuestions(this.props.team.id, `page=${page}`);
         this.setState((prevState) => {
             const nextState = prevState;
             nextState.questions.totalCount = questionsResponse.count;

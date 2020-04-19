@@ -10,7 +10,7 @@ class ArchQnATeamPageComponent extends Component {
 
     static async getInitialProps(ctx) {
         return {
-            team: await API.fetchTeam(ctx.req, ctx.query.id),
+            team: await API.fetchTeam(ctx.query.id, ctx.req),
         };
     }
 
