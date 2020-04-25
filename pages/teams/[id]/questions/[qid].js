@@ -24,6 +24,10 @@ class ArchQnAQuestionPageComponent extends Component {
     }
 
     static async getInitialProps(ctx) {
+        if (typeof window === "undefined") {
+            const response = await API.upViewQuestion(ctx.query.qid, ctx.req);
+            console.log(response);
+        }
         return {
             questionId: ctx.query.qid,
         };
@@ -32,7 +36,7 @@ class ArchQnAQuestionPageComponent extends Component {
     async componentDidMount() {
         const question = await API.fetchQuestion(this.props.questionId);
         const team = await API.fetchTeam(question.team);
-        this.setState({question: await this.fetchQuestion(), team: team});
+        this.setState({question: question, team: team});
     }
 
     async fetchQuestion() {

@@ -297,6 +297,45 @@ export default {
     },
 
     /**
+     * Increment the views on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    upViewQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/upview/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Up Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    upVoteQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/upvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Down Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    downVoteQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/downvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Deletes the question by the given id
      *
      * @param req

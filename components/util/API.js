@@ -81,6 +81,39 @@ export default {
     },
 
     /**
+     * Increment the views on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    upViewQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.upViewQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
+     * Performs an Up Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    upVoteQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.upVoteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
+     * Performs an Down Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    downVoteQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.downVoteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
      * Adds a new question
      *
      * @param req
