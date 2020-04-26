@@ -49,6 +49,8 @@ export default class QnACrudItemComponent extends Component {
         this.getFormFieldLabel = this.getFormFieldLabel.bind(this);
         this.getFormValidationRules = this.getFormValidationRules.bind(this);
         this.getCrudItemTypeKey = this.getCrudItemTypeKey.bind(this);
+        this.onVote = this.onVote.bind(this);
+        this.onAcceptAnswer = this.onAcceptAnswer.bind(this);
     }
 
     isQuestionType() {
@@ -183,11 +185,24 @@ export default class QnACrudItemComponent extends Component {
         return this.formConfig[this.getCrudItemTypeKey()].validationRules;
     }
 
+    onVote(voteType) {
+        if (typeof this.props.onVote === 'function') {
+            this.props.onVote(this.props.crudItem.id, voteType);
+        }
+    }
+
+    onAcceptAnswer() {
+        if (typeof this.props.crudItemStatsProps.onAcceptAnswer === 'function') {
+            this.props.crudItemStatsProps.onAcceptAnswer(this.props.crudItem.id);
+        }
+    }
+
     render() {
 
         const isAddMode = this.stateUtil.isAddMode(this);
         const crudItem = isAddMode ? {} : this.props.crudItem;
         const detailed = this.props.detailed;
+        const crudItemStatsProps = this.props.crudItemStatsProps ? this.props.crudItemStatsProps : {};
 
         let crudItemUrl = '';
         if (this.isQuestionType()) {
@@ -201,7 +216,11 @@ export default class QnACrudItemComponent extends Component {
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
         const isFormEditable = (isEditMode && crudItem.can_update) || isAddMode;
 
-        let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType}/>;
+        let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType} detailedView={detailed}
+                                                       onVote={this.onVote} currentVoteType={crudItem.current_user_vote_type}
+                                                       onAcceptAnswer={this.onAcceptAnswer}
+                                                       isQuestionOwner={crudItemStatsProps.isQuestionOwner}
+                                                       isAcceptedAnswer={crudItemStatsProps.isAcceptedAnswer}/>;
         let crudItemName = '';
         let crudItemSubTitle = '';
         let questionTags = '';

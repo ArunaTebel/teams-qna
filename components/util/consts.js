@@ -53,6 +53,12 @@ export default {
             }
         },
 
+        QnACrudItemStatsComponent: {
+            actions: {UP: 'up', DOWN: 'down'},
+            activeIconColor: 'teal',
+            inactiveIconColor: 'black',
+        },
+
         QnACrudItemComponent: {
             content_max_len: 200,
             sub_content_max_len: 60,

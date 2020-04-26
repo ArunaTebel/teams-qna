@@ -21,9 +21,13 @@ class ArchQnAQuestionPageComponent extends Component {
         super(props);
         this.onUpdate = this.onUpdate.bind(this);
         this.fetchQuestion = this.fetchQuestion.bind(this);
+        this.onVote = this.onVote.bind(this);
     }
 
     static async getInitialProps(ctx) {
+        if (typeof window === "undefined") {
+            await API.upViewQuestion(ctx.query.qid, ctx.req);
+        }
         return {
             questionId: ctx.query.qid,
         };
@@ -32,7 +36,7 @@ class ArchQnAQuestionPageComponent extends Component {
     async componentDidMount() {
         const question = await API.fetchQuestion(this.props.questionId);
         const team = await API.fetchTeam(question.team);
-        this.setState({question: await this.fetchQuestion(), team: team});
+        this.setState({question: question, team: team});
     }
 
     async fetchQuestion() {
@@ -41,6 +45,10 @@ class ArchQnAQuestionPageComponent extends Component {
 
     async onUpdate() {
         this.setState({question: await this.fetchQuestion()})
+    }
+
+    async onVote(questionId, voteType) {
+        this.setState({question: await API[`${voteType}VoteQuestion`](questionId)})
     }
 
     render() {
@@ -58,6 +66,7 @@ class ArchQnAQuestionPageComponent extends Component {
                 crudItem={question}
                 crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}
                 detailed={true}
+                onVote={this.onVote}
                 onSaveCallback={this.onUpdate}
                 teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id}/>;

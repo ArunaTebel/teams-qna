@@ -81,6 +81,39 @@ export default {
     },
 
     /**
+     * Increment the views on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    upViewQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.upViewQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
+     * Performs an Up Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    upVoteQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.upVoteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
+     * Performs an Down Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<*|void>}
+     */
+    downVoteQuestion: async (questionId, req = false) => {
+        return await ArchQnaApiService.downVoteQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
      * Adds a new question
      *
      * @param req
@@ -151,6 +184,39 @@ export default {
         if (response.status === 204) {
             return answerId;
         }
+    },
+
+    /**
+     * Performs an Up Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    upVoteAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.upVoteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    },
+
+    /**
+     * Performs an Down Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    downVoteAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.downVoteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    },
+
+    /**
+     * Accepts the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    acceptAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.acceptAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
     },
 
     /**

@@ -257,6 +257,45 @@ export default {
     },
 
     /**
+     * Performs an Up Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    upVoteAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/upvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Down Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    downVoteAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/downvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Accepts Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    acceptAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/accept/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetch the question by id
      *
      * @param req
@@ -292,6 +331,45 @@ export default {
      */
     updateQuestion: async (req, questionId, questionData) => {
         return await doPatch(`${C.API_PATH}/questions/${questionId}/`, questionData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Increment the views on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    upViewQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/upview/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Up Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    upVoteQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/upvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Down Vote on the question having the id
+     *
+     * @param req
+     * @param questionId
+     * @returns {Promise<any>}
+     */
+    downVoteQuestion: async (req, questionId) => {
+        return await doPost(`${C.API_PATH}/questions/${questionId}/downvote/`, {}, req).then(async r => {
             return await respondIfAuthorized(r);
         }).catch(async error => await handleApiError(error));
     },
