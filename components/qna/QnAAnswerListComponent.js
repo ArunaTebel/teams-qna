@@ -12,7 +12,7 @@ import Utils from "../util/utils";
 
 export default class QnAAnswerListComponent extends Component {
 
-    state = {answers: [], loading: true, showNewAnswerForm: false};
+    state = {answers: [], loading: true, showNewAnswerForm: false, acceptedAnswerId: null};
 
     constructor(props) {
         super(props);
@@ -26,13 +26,15 @@ export default class QnAAnswerListComponent extends Component {
         this.onAddNewAnswer = this.onAddNewAnswer.bind(this);
         this.onCancelAddNewAnswer = this.onCancelAddNewAnswer.bind(this);
         this.onVote = this.onVote.bind(this);
+        this.onAcceptAnswer = this.onAcceptAnswer.bind(this);
     }
 
     async componentDidMount() {
         const answers = await API.fetchQuestionAnswers(this.props.question.id);
         this.setState({
             answers: answers,
-            loading: false
+            loading: false,
+            acceptedAnswerId: this.props.question.accepted_answer
         });
     }
 
@@ -97,16 +99,32 @@ export default class QnAAnswerListComponent extends Component {
 
     }
 
+    async onAcceptAnswer(answerId) {
+        await API.acceptAnswer(answerId);
+        const question = await API.fetchQuestion(this.props.question.id);
+        this.setState((prevState) => {
+            const nextState = prevState;
+            nextState.acceptedAnswerId = question.accepted_answer;
+            return nextState;
+        });
+    }
+
     render() {
 
         let answerComponents;
 
         if (!this.state.loading) {
             answerComponents = this.state.answers.map((answer, idx) => {
+                const isAcceptedAnswer = Utils.strings.numStrComp(this.state.acceptedAnswerId, answer.id);
                 return [
                     <QnACrudItemComponent key={`crud_item_${idx}`} crudItem={answer} detailed onSaveCallback={this.onAnswerUpdateCallback}
                                           questionId={this.props.question.id}
                                           onVote={this.onVote}
+                                          crudItemStatsProps={{
+                                              isQuestionOwner: this.props.question.is_owner,
+                                              isAcceptedAnswer: isAcceptedAnswer,
+                                              onAcceptAnswer: this.onAcceptAnswer
+                                          }}
                                           onDeleteCallback={this.onAnswerDeleteCallback}
                                           crudItemType={C.components.QnACrudItemComponent.crudItemTypes.answer}/>,
                     <Grid key={`answer_comment_list_grid${idx}`} style={{marginBottom: '10px'}}>

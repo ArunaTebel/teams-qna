@@ -209,6 +209,17 @@ export default {
     },
 
     /**
+     * Accepts the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    acceptAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.acceptAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    },
+
+    /**
      * Fetches the comments of the given answer
      *
      * @param req

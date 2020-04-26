@@ -50,6 +50,7 @@ export default class QnACrudItemComponent extends Component {
         this.getFormValidationRules = this.getFormValidationRules.bind(this);
         this.getCrudItemTypeKey = this.getCrudItemTypeKey.bind(this);
         this.onVote = this.onVote.bind(this);
+        this.onAcceptAnswer = this.onAcceptAnswer.bind(this);
     }
 
     isQuestionType() {
@@ -190,11 +191,18 @@ export default class QnACrudItemComponent extends Component {
         }
     }
 
+    onAcceptAnswer() {
+        if (typeof this.props.crudItemStatsProps.onAcceptAnswer === 'function') {
+            this.props.crudItemStatsProps.onAcceptAnswer(this.props.crudItem.id);
+        }
+    }
+
     render() {
 
         const isAddMode = this.stateUtil.isAddMode(this);
         const crudItem = isAddMode ? {} : this.props.crudItem;
         const detailed = this.props.detailed;
+        const crudItemStatsProps = this.props.crudItemStatsProps ? this.props.crudItemStatsProps : {};
 
         let crudItemUrl = '';
         if (this.isQuestionType()) {
@@ -209,7 +217,10 @@ export default class QnACrudItemComponent extends Component {
         const isFormEditable = (isEditMode && crudItem.can_update) || isAddMode;
 
         let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType} detailedView={detailed}
-                                                           onVote={this.onVote} currentVoteType={crudItem.current_user_vote_type}/>;
+                                                       onVote={this.onVote} currentVoteType={crudItem.current_user_vote_type}
+                                                       onAcceptAnswer={this.onAcceptAnswer}
+                                                       isQuestionOwner={crudItemStatsProps.isQuestionOwner}
+                                                       isAcceptedAnswer={crudItemStatsProps.isAcceptedAnswer}/>;
         let crudItemName = '';
         let crudItemSubTitle = '';
         let questionTags = '';

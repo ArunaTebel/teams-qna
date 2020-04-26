@@ -283,6 +283,19 @@ export default {
     },
 
     /**
+     * Accepts Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    acceptAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/accept/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetch the question by id
      *
      * @param req
