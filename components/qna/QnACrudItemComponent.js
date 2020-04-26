@@ -49,6 +49,7 @@ export default class QnACrudItemComponent extends Component {
         this.getFormFieldLabel = this.getFormFieldLabel.bind(this);
         this.getFormValidationRules = this.getFormValidationRules.bind(this);
         this.getCrudItemTypeKey = this.getCrudItemTypeKey.bind(this);
+        this.onVote = this.onVote.bind(this);
     }
 
     isQuestionType() {
@@ -183,6 +184,12 @@ export default class QnACrudItemComponent extends Component {
         return this.formConfig[this.getCrudItemTypeKey()].validationRules;
     }
 
+    onVote(voteType) {
+        if (typeof this.props.onVote === 'function') {
+            this.props.onVote(this.props.crudItem.id, voteType);
+        }
+    }
+
     render() {
 
         const isAddMode = this.stateUtil.isAddMode(this);
@@ -201,7 +208,8 @@ export default class QnACrudItemComponent extends Component {
         const isCommentFormBusy = this.stateUtil.getIsFormBusy(this);
         const isFormEditable = (isEditMode && crudItem.can_update) || isAddMode;
 
-        let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType}/>;
+        let crudItemStats = <QnACrudItemStatsComponent crudItem={crudItem} crudItemType={this.props.crudItemType} detailedView={detailed}
+                                                           onVote={this.onVote} currentVoteType={crudItem.current_user_vote_type}/>;
         let crudItemName = '';
         let crudItemSubTitle = '';
         let questionTags = '';

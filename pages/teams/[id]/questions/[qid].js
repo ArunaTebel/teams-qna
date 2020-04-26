@@ -21,6 +21,7 @@ class ArchQnAQuestionPageComponent extends Component {
         super(props);
         this.onUpdate = this.onUpdate.bind(this);
         this.fetchQuestion = this.fetchQuestion.bind(this);
+        this.onVote = this.onVote.bind(this);
     }
 
     static async getInitialProps(ctx) {
@@ -46,6 +47,10 @@ class ArchQnAQuestionPageComponent extends Component {
         this.setState({question: await this.fetchQuestion()})
     }
 
+    async onVote(questionId, voteType) {
+        this.setState({question: await API[`${voteType}VoteQuestion`](questionId)})
+    }
+
     render() {
         const question = this.state.question;
         let questionComponent;
@@ -61,6 +66,7 @@ class ArchQnAQuestionPageComponent extends Component {
                 crudItem={question}
                 crudItemType={C.components.QnACrudItemComponent.crudItemTypes.question}
                 detailed={true}
+                onVote={this.onVote}
                 onSaveCallback={this.onUpdate}
                 teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id}/>;

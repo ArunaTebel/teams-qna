@@ -187,6 +187,28 @@ export default {
     },
 
     /**
+     * Performs an Up Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    upVoteAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.upVoteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    },
+
+    /**
+     * Performs an Down Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<*|void>}
+     */
+    downVoteAnswer: async (answerId, req = false) => {
+        return await ArchQnaApiService.downVoteAnswer(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), answerId);
+    },
+
+    /**
      * Fetches the comments of the given answer
      *
      * @param req

@@ -257,6 +257,32 @@ export default {
     },
 
     /**
+     * Performs an Up Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    upVoteAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/upvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Performs an Down Vote on the Answer having the id
+     *
+     * @param req
+     * @param answerId
+     * @returns {Promise<any>}
+     */
+    downVoteAnswer: async (req, answerId) => {
+        return await doPost(`${C.API_PATH}/answers/${answerId}/downvote/`, {}, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetch the question by id
      *
      * @param req
