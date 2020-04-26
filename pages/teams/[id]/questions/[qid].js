@@ -25,8 +25,7 @@ class ArchQnAQuestionPageComponent extends Component {
 
     static async getInitialProps(ctx) {
         if (typeof window === "undefined") {
-            const response = await API.upViewQuestion(ctx.query.qid, ctx.req);
-            console.log(response);
+            await API.upViewQuestion(ctx.query.qid, ctx.req);
         }
         return {
             questionId: ctx.query.qid,
