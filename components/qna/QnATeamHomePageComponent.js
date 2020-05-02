@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Grid, Item, Divider, Button, Label, Icon} from 'semantic-ui-react'
+import {Grid, Item, Divider, Button, Label, Icon, Card} from 'semantic-ui-react'
 import QnATeamDescriptionCardComponent from "./QnATeamDescriptionCardComponent";
-import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
+import QnAActivityLogListComponent from "./QnAActivityLogListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
@@ -223,7 +223,17 @@ class QnATeamHomePageComponent extends Component {
                     </Grid.Column>
 
                     <Grid.Column width={4}>
-                        <QnARecentActivityListComponent team={this.props.team}/>
+                        <Card>
+                            <Card.Content>
+                                <Card.Header>Recent Activity in Team</Card.Header>
+                            </Card.Content>
+                            <Card.Content className={styles.activityLogCardContent}>
+                                <QnAActivityLogListComponent
+                                    fetcher={(query) => API.fetchTeamActivityLogs(this.props.team.id, query)}
+                                    getHrefForListItem={(activityLog) => `/teams/${this.props.team.id}/questions/${activityLog.data.log.params.question_id}`}
+                                />
+                            </Card.Content>
+                        </Card>
                     </Grid.Column>
 
                 </Grid.Row>

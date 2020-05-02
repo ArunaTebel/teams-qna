@@ -172,6 +172,12 @@ export default {
             pageSize: {
                 default: 10
             }
+        },
+
+        QnAActivityLogListComponent: {
+            activityTypes: {
+                default: 10
+            }
         }
     }
 }

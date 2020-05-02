@@ -191,6 +191,34 @@ export default {
     },
 
     /**
+     * Fetches the activities in the given team
+     *
+     * @param req
+     * @param teamId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamActivityLogs: async (req, teamId, query = '') => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/activity-logs/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the activities in the given question
+     *
+     * @param req
+     * @param questionId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchQuestionActivityLogs: async (req, questionId, query = '') => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/activity-logs/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the tags in the given team
      *
      * @param req

@@ -58,6 +58,18 @@ export default {
     },
 
     /**
+     * Fetches the activity logs in the given team
+     *
+     * @param req
+     * @param teamId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamActivityLogs: async (teamId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchTeamActivityLogs(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), teamId, query);
+    },
+
+    /**
      * Fetch the question by id
      *
      * @param req
@@ -66,6 +78,18 @@ export default {
      */
     fetchQuestion: async (questionId, req = false) => {
         return await ArchQnaApiService.fetchQuestion(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId);
+    },
+
+    /**
+     * Fetches the activity logs in the given question
+     *
+     * @param req
+     * @param questionId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchQuestionActivityLogs: async (questionId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchQuestionActivityLogs(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), questionId, query);
     },
 
     /**
