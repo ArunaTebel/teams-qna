@@ -124,14 +124,20 @@ export default class QnAListComponent extends Component {
                     <ListItem key={idx} item={listItem} options={this.props.listItemRenderer.props}/>
                 );
             });
-
+            if (listItems.length === 0) {
+                listItems.push(
+                    <Feed.Event key={'nextLink'}>
+                        <Feed.Content><Feed.Extra text>- No Records Found -</Feed.Extra></Feed.Content>
+                    </Feed.Event>
+                );
+            }
             if (this.state.next) {
                 listItems.push(
                     <Feed.Event key={'nextLink'}>
                         <Feed.Label/>
                         <Feed.Content><Feed.Extra text><a onClick={this.fetchListItems}>{`Load more...`}</a></Feed.Extra></Feed.Content>
                     </Feed.Event>
-                )
+                );
             }
         }
 
