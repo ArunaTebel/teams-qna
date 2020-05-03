@@ -166,6 +166,19 @@ export default {
     },
 
     /**
+     * Fetches the stats of the logged in user
+     *
+     * @param req
+     * @param userId
+     * @returns {Promise<*|void>}
+     */
+    fetchUserStats: async (req, userId) => {
+        return await doGet(`${C.API_PATH}/users/${userId}/stats/`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the list of teams, the logged in user is a member of
      *
      * @param req

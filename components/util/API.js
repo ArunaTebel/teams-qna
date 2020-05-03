@@ -26,6 +26,17 @@ export default {
     },
 
     /**
+     * Fetches the stats of the logged in user
+     *
+     * @param userId
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchUserStats: async (userId, req = false) => {
+        return await ArchQnaApiService.fetchUserStats(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), userId);
+    },
+
+    /**
      * Fetches the list of teams, the logged in user is a member of
      *
      * @param req
