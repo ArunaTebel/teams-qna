@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Grid, Item, Divider, Button, Label, Icon} from 'semantic-ui-react'
+import {Grid, Item, Divider, Button, Label, Icon, Card} from 'semantic-ui-react'
 import QnATeamDescriptionCardComponent from "./QnATeamDescriptionCardComponent";
-import QnARecentActivityListComponent from "./QnARecentActivityListComponent";
+import QnAListComponent from "./QnAListComponent";
 import styles from './styles/QnAHomePageComponent.module.scss'
 import QnAFluidParagraphPlaceholderListComponent from "./placeholders/QnAFluidParagraphPlaceholderListComponent";
 import API from "../util/API";
@@ -12,6 +12,7 @@ import QnAPaginationComponent from "../commons/QnAPaginationComponent";
 import QnAQuestionSearchFormComponent from "./QnAQuestionSearchFormComponent";
 import commons from "../../utils/commons";
 import _ from "lodash";
+import ActivityLogListItemRendererComponent from "./listItemRenderers/ActivityLogListItemRendererComponent";
 
 class QnATeamHomePageComponent extends Component {
 
@@ -223,7 +224,20 @@ class QnATeamHomePageComponent extends Component {
                     </Grid.Column>
 
                     <Grid.Column width={4}>
-                        <QnARecentActivityListComponent team={this.props.team}/>
+                        <Card>
+                            <Card.Content>
+                                <Card.Header>Recent Activity in Team</Card.Header>
+                            </Card.Content>
+                            <Card.Content className={styles.activityLogCardContent}>
+                                <QnAListComponent
+                                    fetcher={(query) => API.fetchTeamActivityLogs(this.props.team.id, query)}
+                                    listItemRenderer={{
+                                        component: ActivityLogListItemRendererComponent,
+                                        props: {getHrefForListItem: (activityLog) => `/teams/${this.props.team.id}/questions/${activityLog.data.log.params.question_id}`},
+                                    }}
+                                />
+                            </Card.Content>
+                        </Card>
                     </Grid.Column>
 
                 </Grid.Row>

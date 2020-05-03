@@ -152,6 +152,33 @@ export default {
     },
 
     /**
+     * Fetches the activity logs in the given user
+     *
+     * @param userId
+     * @param query
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchUserActivityLogs: async (req, userId, query = '') => {
+        return await doGet(`${C.API_PATH}/users/${userId}/activity-logs/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the stats of the logged in user
+     *
+     * @param req
+     * @param userId
+     * @returns {Promise<*|void>}
+     */
+    fetchUserStats: async (req, userId) => {
+        return await doGet(`${C.API_PATH}/users/${userId}/stats/`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the list of teams, the logged in user is a member of
      *
      * @param req
@@ -159,6 +186,58 @@ export default {
      */
     fetchMyTeams: async (req) => {
         return await doGet(`${C.API_PATH}/teams/my-teams/`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the list of questions, the logged in user has asked
+     *
+     * @param req
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchMyQuestions: async (req, query = '') => {
+        return await doGet(`${C.API_PATH}/questions/my-questions/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the list of answers, the logged in user has given
+     *
+     * @param req
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchMyAnswers: async (req, query = '') => {
+        return await doGet(`${C.API_PATH}/answers/my-answers/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the list of comments, the logged in user has given to questions
+     *
+     * @param req
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchMyQuestionComments: async (req, query = '') => {
+        return await doGet(`${C.API_PATH}/question-comments/my-comments/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the list of comments, the logged in user has given to answers
+     *
+     * @param req
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchMyAnswerComments: async (req, query = '') => {
+        return await doGet(`${C.API_PATH}/answer-comments/my-comments/?${query}`, req).then(async r => {
             return await respondIfAuthorized(r, []);
         }).catch(async error => await handleApiError(error));
     },
@@ -186,6 +265,34 @@ export default {
      */
     fetchTeamQuestions: async (req, teamId, query = '') => {
         return await doGet(`${C.API_PATH}/teams/${teamId}/questions/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the activities in the given team
+     *
+     * @param req
+     * @param teamId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchTeamActivityLogs: async (req, teamId, query = '') => {
+        return await doGet(`${C.API_PATH}/teams/${teamId}/activity-logs/?${query}`, req).then(async r => {
+            return await respondIfAuthorized(r, []);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
+     * Fetches the activities in the given question
+     *
+     * @param req
+     * @param questionId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchQuestionActivityLogs: async (req, questionId, query = '') => {
+        return await doGet(`${C.API_PATH}/questions/${questionId}/activity-logs/?${query}`, req).then(async r => {
             return await respondIfAuthorized(r, []);
         }).catch(async error => await handleApiError(error));
     },

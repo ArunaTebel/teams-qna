@@ -9,6 +9,8 @@ import QnAAnswerListComponent from "../../../../components/qna/QnAAnswerListComp
 import API from "../../../../components/util/API";
 import C from "../../../../components/util/consts";
 import Utils from "../../../../components/util/utils";
+import QnAListComponent from "../../../../components/qna/QnAListComponent";
+import ActivityLogListItemRendererComponent from "../../../../components/qna/listItemRenderers/ActivityLogListItemRendererComponent";
 
 class ArchQnAQuestionPageComponent extends Component {
 
@@ -56,11 +58,13 @@ class ArchQnAQuestionPageComponent extends Component {
         let questionComponent;
         let commentListComponent;
         let answersComponent;
+        let questionActivityLogComponent;
 
         if (!question.id) {
             questionComponent = <QnAFluidParagraphPlaceholderListComponent/>;
             commentListComponent = <QnAFluidParagraphPlaceholderListComponent/>;
             answersComponent = <QnAFluidParagraphPlaceholderListComponent/>;
+            questionActivityLogComponent = <QnAFluidParagraphPlaceholderListComponent/>
         } else {
             questionComponent = <QnACrudItemComponent
                 crudItem={question}
@@ -71,6 +75,14 @@ class ArchQnAQuestionPageComponent extends Component {
                 teamId={question.team}/>;
             commentListComponent = <QnACommentListComponent questionId={question.id}/>;
             answersComponent = <QnAAnswerListComponent question={question}/>;
+            questionActivityLogComponent = <QnAListComponent
+                fetcher={(query) => API.fetchQuestionActivityLogs(this.state.question.id, query)}
+                listItemRenderer={{
+                    component: ActivityLogListItemRendererComponent,
+                    props: {getHrefForListItem: (activityLog) => `/teams/${this.state.team.id}/questions/${activityLog.data.log.params.question_id}`},
+                }}
+                autoPoll={{frequency: 5000}}
+            />
         }
 
         return (
@@ -100,8 +112,8 @@ class ArchQnAQuestionPageComponent extends Component {
                             </Item.Group>
                         </Grid.Column>
                         <Grid.Column width={4}>
-                            <h3>Related Questions</h3>
-                            <QnAFluidParagraphPlaceholderListComponent/>
+                            <h3>Question Activity</h3>
+                            {questionActivityLogComponent}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

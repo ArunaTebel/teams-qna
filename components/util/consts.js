@@ -172,6 +172,50 @@ export default {
             pageSize: {
                 default: 10
             }
+        },
+
+        QnAActivityLogListComponent: {
+            activityTypes: {
+                default: 10
+            }
+        },
+
+        ArchQnAProfilePageComponent: {
+            leftMenuTabs: [
+                {
+                    menuTitle: 'profile',
+                },
+                {
+                    menuTitle: 'activities',
+                },
+            ],
+            activityLogTabs: [
+                {
+                    logTarget: 'CURRENT_USER',
+                    menuTitle: 'My Activity',
+                    description: 'All the activities you have performed appear here',
+                },
+                {
+                    logTarget: 'QUESTION_OWNER',
+                    menuTitle: 'My Questions',
+                    description: 'Activities on your Questions appear here',
+                },
+                {
+                    logTarget: 'ANSWER_OWNER',
+                    menuTitle: 'My Answers',
+                    description: 'Activities on your Answers appear here',
+                },
+                {
+                    logTarget: 'QUESTION_COMMENTED_USER',
+                    menuTitle: 'My Question Comments',
+                    description: 'Activities on your Comments on Questions appear here',
+                },
+                {
+                    logTarget: 'ANSWER_COMMENTED_USER',
+                    menuTitle: 'My Answer Comments',
+                    description: 'Activities on your Comments on Answers appear here',
+                },
+            ]
         }
     }
 }

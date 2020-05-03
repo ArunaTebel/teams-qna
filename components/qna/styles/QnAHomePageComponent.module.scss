@@ -20,3 +20,8 @@
 .questionListPaginationContainer {
   height: 30px;
 }
+
+.activityLogCardContent {
+  max-height: 400px;
+  overflow-y: auto;
+}

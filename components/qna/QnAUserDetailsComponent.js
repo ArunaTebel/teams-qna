@@ -15,8 +15,9 @@ export default class QnAUserDetailsComponent extends Component {
                 </Comment.Metadata>
             </Comment.Content>;
         }
+        const className = this.props.className ? this.props.className : styles.userContainer;
         return (
-            <Comment.Group className={styles.userContainer}>
+            <Comment.Group className={className}>
                 <Comment>
                     {dateTimeTag}
                     <Comment.Avatar as='a' src={`/img/test-data/${user.avatar}.jpg`}/>

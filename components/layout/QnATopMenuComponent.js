@@ -37,7 +37,7 @@ export default class QnATopMenuComponent extends Component {
             userLink = <Menu.Item>
                 <Dropdown text={`Hello, ${this.state.loggedInUser.username}`} floating>
                     <Dropdown.Menu>
-                        <Dropdown.Item text='Profile'/>
+                        <Dropdown.Item><a href={`/profile`}>Profile</a></Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item><a href={'/auth/logout'}>Logout</a></Dropdown.Item>
                     </Dropdown.Menu>
