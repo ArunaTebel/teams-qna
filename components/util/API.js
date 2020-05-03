@@ -14,6 +14,18 @@ export default {
     },
 
     /**
+     * Fetches the activity logs in the given user
+     *
+     * @param req
+     * @param userId
+     * @param query
+     * @returns {Promise<*|void>}
+     */
+    fetchUserActivityLogs: async (userId, query = '', req = false) => {
+        return await ArchQnaApiService.fetchUserActivityLogs(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), userId, query);
+    },
+
+    /**
      * Fetches the list of teams, the logged in user is a member of
      *
      * @param req
@@ -21,6 +33,50 @@ export default {
      */
     fetchMyTeams: async (req = false) => {
         return await ArchQnaApiService.fetchMyTeams(req ? req : apiUtils.getProxyRequestWithTokenHeaders());
+    },
+
+    /**
+     * Fetches the list of questions, the logged in user has asked
+     *
+     * @param query
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchMyQuestions: async (query = '', req = false) => {
+        return await ArchQnaApiService.fetchMyQuestions(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), query);
+    },
+
+    /**
+     * Fetches the list of answers, the logged in user has given
+     *
+     * @param query
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchMyAnswers: async (query = '', req = false) => {
+        return await ArchQnaApiService.fetchMyAnswers(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), query);
+    },
+
+    /**
+     * Fetches the list of comments, the logged in user has given for questions
+     *
+     * @param query
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchMyQuestionComments: async (query = '', req = false) => {
+        return await ArchQnaApiService.fetchMyQuestionComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), query);
+    },
+
+    /**
+     * Fetches the list of comments, the logged in user has given for answers
+     *
+     * @param query
+     * @param req
+     * @returns {Promise<*|void>}
+     */
+    fetchMyAnswerComments: async (query = '', req = false) => {
+        return await ArchQnaApiService.fetchMyAnswerComments(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), query);
     },
 
     /**
