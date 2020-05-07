@@ -152,6 +152,20 @@ export default {
     },
 
     /**
+     * Updates the the given user
+     *
+     * @param req
+     * @param userId
+     * @param userData
+     * @returns {Promise<*|void>}
+     */
+    updateUser: async (req, userId, userData) => {
+        return await doPatch(`${C.API_PATH}/users/${userId}/`, userData, req).then(async r => {
+            return await respondIfAuthorized(r);
+        }).catch(async error => await handleApiError(error));
+    },
+
+    /**
      * Fetches the activity logs in the given user
      *
      * @param userId

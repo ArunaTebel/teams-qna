@@ -17,6 +17,7 @@ class ArchQnAQuestionPageComponent extends Component {
     state = {
         question: {},
         team: {name: ''},
+        currentUser: {},
     };
 
     constructor(props) {
@@ -38,7 +39,8 @@ class ArchQnAQuestionPageComponent extends Component {
     async componentDidMount() {
         const question = await API.fetchQuestion(this.props.questionId);
         const team = await API.fetchTeam(question.team);
-        this.setState({question: question, team: team});
+        const currentUser = await API.fetchUser();
+        this.setState({question: question, team: team, currentUser: currentUser});
     }
 
     async fetchQuestion() {
@@ -79,7 +81,10 @@ class ArchQnAQuestionPageComponent extends Component {
                 fetcher={(query) => API.fetchQuestionActivityLogs(this.state.question.id, query)}
                 listItemRenderer={{
                     component: ActivityLogListItemRendererComponent,
-                    props: {getHrefForListItem: (activityLog) => `/teams/${this.state.team.id}/questions/${activityLog.data.log.params.question_id}`},
+                    props: {
+                        getHrefForListItem: (activityLog) => `/teams/${this.state.team.id}/questions/${activityLog.data.log.params.question_id}`,
+                        currentUser: this.state.currentUser
+                    },
                 }}
                 autoPoll={{frequency: 5000}}
             />

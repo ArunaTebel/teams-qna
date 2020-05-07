@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
-import {Comment, Confirm} from "semantic-ui-react";
+import {Comment, Confirm, Feed, Image, Label} from "semantic-ui-react";
 import Utils from "../util/utils";
+import styles from "./styles/QnAUserDetailsComponent.module.scss";
+import QnAUserAvatarComponent from "./QnAUserAvatarComponent";
 
 export default class QnACommentComponent extends Component {
 
@@ -47,7 +49,8 @@ export default class QnACommentComponent extends Component {
         }
 
         return (
-            <Comment key={comment.id}>
+
+            <Feed.Event key={comment.id}>
 
                 <Confirm
                     content='Delete the comment?'
@@ -57,19 +60,22 @@ export default class QnACommentComponent extends Component {
                     size='mini'
                 />
 
-                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg'/>
-                <Comment.Content>
-                    <Comment.Author as='a'>{comment.owner.full_name}</Comment.Author>
-                    <Comment.Metadata>
-                        <div>{Utils.datetime.todatetime(comment.created_at)}</div>
-                    </Comment.Metadata>
-                    <Comment.Text>{comment.content}</Comment.Text>
-                    <Comment.Actions>
+                <Feed.Label>
+                    <QnAUserAvatarComponent user={comment.owner}/>
+                </Feed.Label>
+                <Feed.Content>
+                    <Feed.Summary>
+                        {comment.owner.full_name}<Feed.Date content={Utils.datetime.todatetime(comment.created_at)}/>
+                    </Feed.Summary>
+                    <Feed.Extra text>
+                        {comment.content}
+                    </Feed.Extra>
+                    <Feed.Meta>
                         {commentEditAction}
                         {commentDeleteAction}
-                    </Comment.Actions>
-                </Comment.Content>
-            </Comment>
+                    </Feed.Meta>
+                </Feed.Content>
+            </Feed.Event>
         );
     }
 

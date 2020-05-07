@@ -27,7 +27,8 @@ class QnATeamHomePageComponent extends Component {
         searchForm: {
             show: false,
             filters: this.defaultSearchFilters
-        }
+        },
+        currentUser: {},
     };
 
     constructor(props) {
@@ -48,6 +49,7 @@ class QnATeamHomePageComponent extends Component {
     async componentDidMount() {
 
         const teamTags = await API.fetchTeamTags(this.props.team.id);
+        const currentUser = await API.fetchUser();
         const urlParams = Router.query;
 
         this.setState((prevState) => {
@@ -60,6 +62,7 @@ class QnATeamHomePageComponent extends Component {
                 tags: urlParams.tags ? urlParams.tags : '',
                 unanswered: urlParams.unanswered === 'true' ? urlParams.unanswered : false,
             };
+            nextState.currentUser = currentUser;
             return nextState;
         }, this.searchQuestions);
     }
@@ -233,7 +236,10 @@ class QnATeamHomePageComponent extends Component {
                                     fetcher={(query) => API.fetchTeamActivityLogs(this.props.team.id, query)}
                                     listItemRenderer={{
                                         component: ActivityLogListItemRendererComponent,
-                                        props: {getHrefForListItem: (activityLog) => `/teams/${this.props.team.id}/questions/${activityLog.data.log.params.question_id}`},
+                                        props: {
+                                            getHrefForListItem: (activityLog) => `/teams/${this.props.team.id}/questions/${activityLog.data.log.params.question_id}`,
+                                            currentUser: this.state.currentUser
+                                        },
                                     }}
                                 />
                             </Card.Content>

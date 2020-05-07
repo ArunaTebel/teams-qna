@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import QnAMainLayoutComponent from "../../components/layout/QnAMainLayoutComponent";
 import QnAUserDetailsComponent from "../../components/qna/QnAUserDetailsComponent";
 import API from "../../components/util/API";
-import {Grid, Header, Icon, Item, Label, Menu, Segment, Statistic} from "semantic-ui-react";
+import {Button, Divider, Grid, Header, Icon, Image, Item, Label, Menu, Modal, Segment, Statistic} from "semantic-ui-react";
 import QnAListComponent from "../../components/qna/QnAListComponent";
 import utils from "../../components/util/utils";
 import C from "../../components/util/consts";
@@ -13,6 +13,7 @@ import TeamListItemRendererComponent from "../../components/qna/listItemRenderer
 import QuestionListItemRendererComponent from "../../components/qna/listItemRenderers/QuestionListItemRendererComponent";
 import AnswerListItemRendererComponent from "../../components/qna/listItemRenderers/AnswerListItemRendererComponent";
 import CommentListItemRendererComponent from "../../components/qna/listItemRenderers/CommentListItemRendererComponent";
+import QnAUserAvatarComponent from "../../components/qna/QnAUserAvatarComponent";
 
 class ArchQnAProfilePageComponent extends Component {
 
@@ -26,7 +27,6 @@ class ArchQnAProfilePageComponent extends Component {
 
     constructor(props) {
         super(props);
-        this.activityLogFormatter = this.activityLogFormatter.bind(this);
         this.getSegmentForActiveLeftMenu = this.getSegmentForActiveLeftMenu.bind(this);
         this.getActivityLogSegment = this.getActivityLogSegment.bind(this);
         this.getProfileSegment = this.getProfileSegment.bind(this);
@@ -48,18 +48,6 @@ class ArchQnAProfilePageComponent extends Component {
         };
     }
 
-    activityLogFormatter(activityLog) {
-        if (this.state.activities.logTarget === 'QUESTION_OWNER' || this.state.activities.logTarget === 'ANSWER_OWNER') {
-            const currentUser = activityLog.data.log.params.current_user_data;
-            if (currentUser && utils.strings.numStrComp(currentUser.id, this.props.user.id)) {
-                return activityLog.data.log.message.replace('{current_user}', 'You').replace('{question_name}', activityLog.data.log.params.question_name);
-            } else {
-                return activityLog.message;
-            }
-        }
-        return activityLog.message;
-    }
-
     render() {
         const leftMenuActiveTab = this.state.leftMenu.activeItem;
         const leftMenuTabs = _.map(this.componentConfig.leftMenuTabs, (tab, k) => {
@@ -77,8 +65,17 @@ class ArchQnAProfilePageComponent extends Component {
             <QnAMainLayoutComponent>
                 <Grid>
                     <Grid.Column width={3}>
-                        <Segment color={'teal'}>
-                            <QnAUserDetailsComponent user={this.props.user} className={' '}/>
+                        <Segment color={'teal'} className={styles.userDetailsSegment}>
+                            <Item.Group>
+                                <Item>
+                                    <Item.Content>
+                                        <Item.Header>{this.props.user.full_name}</Item.Header>
+                                        <Item.Meta>{this.props.user.username}</Item.Meta>
+                                        <Item.Meta><Icon name='star'/>{this.props.user.rating}</Item.Meta>
+                                    </Item.Content>
+                                </Item>
+                            </Item.Group>
+                            <QnAUserAvatarComponent user={this.props.user} size={150} editable className={styles.userDetailsSegmentAvatarComp}/>
                         </Segment>
 
                         <Menu fluid vertical tabular>
@@ -130,7 +127,7 @@ class ArchQnAProfilePageComponent extends Component {
                     component: ActivityLogListItemRendererComponent,
                     props: {
                         getHrefForListItem: (activityLog) => `/teams/${activityLog.data.log.params.team_id}/questions/${activityLog.data.log.params.question_id}`,
-                        logFormatter: this.activityLogFormatter,
+                        currentUser: this.props.user,
                     },
                 }}
             />
@@ -141,36 +138,21 @@ class ArchQnAProfilePageComponent extends Component {
         return (
             <div>
                 <Segment attached='top' color={'teal'} className={styles.userBasicInfo}>
-                    <Item.Group>
-                        <Item>
-                            <Item.Image size='tiny' src={`/img/test-data/${this.props.user.avatar}.jpg`}/>
-
-                            <Item.Content>
-                                <Item.Header>{this.props.user.full_name}</Item.Header>
-                                <Item.Meta>{this.props.user.username}</Item.Meta>
-                                <Item.Extra><Icon name='star'/>{this.props.user.rating}</Item.Extra>
-                            </Item.Content>
-                        </Item>
-                    </Item.Group>
-                </Segment>
-
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column width={8} className={styles.segment}>
-                            <h4><Icon name='users'/>My Teams</h4>
-                            <Segment className={styles.segment}>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={8} className={styles.segment}>
+                                <h4><Icon name='users'/>My Teams</h4>
                                 <QnAListComponent
                                     fetcher={(query) => API.fetchMyTeams()}
                                     noPagination
                                     listItemRenderer={{component: TeamListItemRendererComponent, props: {},}}
                                 />
-                            </Segment>
-                        </Grid.Column>
-                        <Grid.Column width={8} className={styles.segment}>
-                            <h4><Icon name='users'/>My Stats</h4>
-                            <Segment className={styles.segment}>
-
-                                <Header as='h4'>Questions<Label size={'mini'} basic pointing={'left'}>{this.props.stats.points_from_questions} points</Label></Header>
+                            </Grid.Column>
+                            <Grid.Column width={8} className={styles.segment}>
+                                <h4><Icon name='users'/>My Stats</h4>
+                                <Header as='h4'>Questions
+                                    <Label size={'mini'} basic pointing={'left'}>{this.props.stats.points_from_questions} points</Label>
+                                </Header>
                                 <Label.Group size={'large'}>
                                     <Label color={'blue'} image>
                                         <Icon name='arrow alternate circle up'/>
@@ -184,7 +166,8 @@ class ArchQnAProfilePageComponent extends Component {
                                     </Label>
                                 </Label.Group>
 
-                                <Header as='h4'>Answers<Label size={'mini'} basic pointing={'left'}>{this.props.stats.points_from_answers} points</Label></Header>
+                                <Header as='h4'>Answers<Label size={'mini'} basic
+                                                              pointing={'left'}>{this.props.stats.points_from_answers} points</Label></Header>
                                 <Label.Group size={'large'}>
                                     <Label color={'green'} image>
                                         <Icon name='check'/>
@@ -202,10 +185,10 @@ class ArchQnAProfilePageComponent extends Component {
                                         <Label.Detail>Down Votes</Label.Detail>
                                     </Label>
                                 </Label.Group>
-                            </Segment>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Segment>
 
                 <h4><Icon name='question circle outline'/>My Questions</h4>
                 <Segment className={styles.segment}>

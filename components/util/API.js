@@ -14,6 +14,18 @@ export default {
     },
 
     /**
+     * Updates the the given user
+     *
+     * @param req
+     * @param userId
+     * @param userData
+     * @returns {Promise<*|void>}
+     */
+    updateUser: async (userId, userData, req = false) => {
+        return await ArchQnaApiService.updateUser(req ? req : apiUtils.getProxyRequestWithTokenHeaders(), userId, userData);
+    },
+
+    /**
      * Fetches the activity logs in the given user
      *
      * @param req

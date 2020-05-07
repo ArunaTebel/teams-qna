@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Comment, Divider, Form, Icon} from 'semantic-ui-react'
+import {Button, Comment, Divider, Feed, Form, Icon} from 'semantic-ui-react'
 import _ from 'lodash'
 import API from "../util/API";
 import Utils from "../util/utils";
@@ -375,7 +375,7 @@ export default class QnACommentListComponent extends Component {
                             className={styles.commentListShowHideLink} onClick={isListVisible ? this.stateUtil.hideList : this.stateUtil.showList}/>
                 </div>
                 <Divider/>
-                <Comment.Group size='small'>
+                <Feed size='small'>
                     {comments}
                     <div className={styles.paginationContainer} hidden={!isListVisible}>
                         <QnAPaginationComponent
@@ -409,7 +409,7 @@ export default class QnACommentListComponent extends Component {
                             <Button onClick={() => this.stateUtil.setCommentFormMode(this.formConfig.modes.add)} type={'button'} size={'mini'}>Cancel</Button>
                         </span>
                     </QnAValidatableFormComponent>
-                </Comment.Group>
+                </Feed>
 
             </div>
 
