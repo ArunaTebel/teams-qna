@@ -38,11 +38,9 @@ export default class QnATopMenuComponent extends Component {
     }
 
     getTeamChoices(teams) {
-        const teamChoices = _.map(teams, (team) => {
-            return {key: team.id, text: team.name, value: team.id, image: {avatar: true, src: `/img/test-data/${team.avatar}.jpg`}};
+        return _.map(teams, (team) => {
+            return {key: team.id, text: team.name, value: team.id, image: {avatar: false, src: `/img/test-data/${team.avatar}.jpg`}};
         });
-        teamChoices.unshift({key: -1, text: 'Team', value: -1});
-        return teamChoices;
     }
 
     render() {
@@ -67,13 +65,13 @@ export default class QnATopMenuComponent extends Component {
                   <span>
                       Go to {' '}
                       <Dropdown
+                          search
+                          text='Team'
                           inline
                           options={this.state.teams}
                           defaultValue={-1}
                           onChange={(e, {value}) => {
-                              if (value !== -1) {
-                                  Router.push(`/teams/${value}`);
-                              }
+                              Router.push(`/teams/${value}`);
                           }}
                       />
                   </span>
