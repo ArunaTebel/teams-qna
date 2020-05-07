@@ -272,6 +272,14 @@ export default {
 
         QnAUserAvatarComponent: {
             size: 45,
+        },
+
+        QnATopMenuComponent: {
+            routeActiveMenuItemMap: {
+                '': 'teams',
+                'teams': 'teams',
+                'profile': 'profile',
+            }
         }
     }
 }
