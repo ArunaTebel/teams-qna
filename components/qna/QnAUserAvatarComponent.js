@@ -28,7 +28,6 @@ class QnAUserAvatarComponent extends Component {
         }
 
         const avatar = this.props.user.avatar ? this.props.user.avatar : {};
-        console.log(avatar);
         return (
             <div style={{textAlign: 'center'}} className={this.props.className}>
                 <Avatar

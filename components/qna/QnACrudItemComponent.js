@@ -51,6 +51,8 @@ export default class QnACrudItemComponent extends Component {
         this.getCrudItemTypeKey = this.getCrudItemTypeKey.bind(this);
         this.onVote = this.onVote.bind(this);
         this.onAcceptAnswer = this.onAcceptAnswer.bind(this);
+        this.addNewTag = this.addNewTag.bind(this);
+        this.enableEditMode = this.enableEditMode.bind(this);
     }
 
     isQuestionType() {
@@ -81,6 +83,15 @@ export default class QnACrudItemComponent extends Component {
         }
     }
 
+    async enableEditMode() {
+        if (this.isQuestionType()) {
+            await this.initQuestionFormData();
+        } else if (this.isAnswerType()) {
+            await this.initAnswerFormData();
+        }
+        this.stateUtil.setToEditMode(this);
+    }
+
     async initQuestionFormData() {
         let teamTags = [];
         if (this.props.specificData) {
@@ -92,6 +103,12 @@ export default class QnACrudItemComponent extends Component {
             return {key: tag.id, text: tag.name, value: tag.id}
         });
         this.stateUtil.setFormMeta(this, 'questionTags', teamTagChoices);
+    }
+
+    addNewTag(e, {value}) {
+        const tags = this.stateUtil.getFormMeta(this, 'questionTags');
+        tags.push({text: value, value});
+        this.stateUtil.setFormMeta(this, 'questionTags', tags);
     }
 
     async initAnswerFormData() {
@@ -261,7 +278,9 @@ export default class QnACrudItemComponent extends Component {
                     />
                 </Item.Meta>;
 
-                questionTags = <Dropdown key={'q_tags_dropdown'} fluid multiple search selection onChange={this.onFormFieldChange}
+                questionTags = <Dropdown key={'q_tags_dropdown'} fluid multiple search selection allowAdditions
+                                         onAddItem={this.addNewTag}
+                                         onChange={this.onFormFieldChange}
                                          placeholder={this.getFormFieldLabel('tags')}
                                          name={this.getFormFieldName('tags')}
                                          value={this.stateUtil.getFormFieldValue(this, this.getFormFieldName('tags'))}
@@ -301,7 +320,7 @@ export default class QnACrudItemComponent extends Component {
             </QnAValidatableFormComponent>
         }
 
-        let crudItemEditAction = crudItem.can_update ? <Comment.Action onClick={() => this.stateUtil.setToEditMode(this)}>Edit</Comment.Action> : '';
+        let crudItemEditAction = crudItem.can_update ? <Comment.Action onClick={this.enableEditMode}>Edit</Comment.Action> : '';
         let crudItemDeleteAction = crudItem.can_delete ?
             <Comment.Action onClick={() => this.stateUtil.openDeleteCrudItemModal(this)}>Delete</Comment.Action> : '';
 
