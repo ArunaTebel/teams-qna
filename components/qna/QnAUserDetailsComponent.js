@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
-import {Comment, Icon} from 'semantic-ui-react'
+import {Comment, Icon, Image} from 'semantic-ui-react'
 import styles from './styles/QnAUserDetailsComponent.module.scss'
+import QnAUserAvatarComponent from "./QnAUserAvatarComponent";
+import utils from "../util/utils";
 
 export default class QnAUserDetailsComponent extends Component {
 
@@ -20,9 +22,11 @@ export default class QnAUserDetailsComponent extends Component {
             <Comment.Group className={className}>
                 <Comment>
                     {dateTimeTag}
-                    <Comment.Avatar as='a' src={`/img/test-data/${user.avatar}.jpg`}/>
-                    <Comment.Content>
-                        <Comment.Author>{user.full_name}</Comment.Author>
+                    <Image className={styles.userImage}>
+                        <QnAUserAvatarComponent user={user}/>
+                    </Image>
+                    <Comment.Content className={styles.userDetailsContent}>
+                        <Comment.Author>{utils.strEllipsis(user.full_name, 20)}</Comment.Author>
                         <Comment.Metadata>
                             <Icon name='star'/>{user.rating}
                         </Comment.Metadata>

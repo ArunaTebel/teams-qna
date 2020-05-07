@@ -216,6 +216,70 @@ export default {
                     description: 'Activities on your Comments on Answers appear here',
                 },
             ]
+        },
+
+        QnASelectUserAvatarComponent: {
+            avatarProps: {
+                size: {
+                    default: 150
+                },
+                topType: {
+                    choices: ["NoHair", "Eyepatch", "Hat", "Hijab", "Turban", "WinterHat1", "WinterHat2", "WinterHat3", "WinterHat4", "LongHairBigHair", "LongHairBob", "LongHairBun", "LongHairCurly", "LongHairCurvy", "LongHairDreads", "LongHairFrida", "LongHairFro", "LongHairFroBand", "LongHairNotTooLong", "LongHairShavedSides", "LongHairMiaWallace", "LongHairStraight", "LongHairStraight2", "LongHairStraightStrand", "ShortHairDreads01", "ShortHairDreads02", "ShortHairFrizzle", "ShortHairShaggyMullet", "ShortHairShortCurly", "ShortHairShortFlat", "ShortHairShortRound", "ShortHairShortWaved", "ShortHairSides", "ShortHairTheCaesar", "ShortHairTheCaesarSidePart"],
+                    default: "NoHair",
+                },
+                accessoriesType: {
+                    choices: ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"],
+                    default: "Blank",
+                },
+                hairColor: {
+                    choices: ["Black", "Blue01", "Blue02", "Blue03", "Gray01", "Gray02", "Heather", "PastelBlue", "PastelGreen", "PastelOrange", "PastelRed", "PastelYellow", "Pink", "Red", "White"],
+                    default: "Black",
+                },
+                facialHairType: {
+                    choices: ["Blank", "BeardMedium", "BeardLight", "BeardMagestic", "MoustacheFancy", "MoustacheMagnum"],
+                    default: "Blank",
+                },
+                facialHairColor: {
+                    choices: ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "Platinum", "Red"],
+                    default: "Auburn",
+                },
+                clotheType: {
+                    choices: ["BlazerShirt", "BlazerSweater", "CollarSweater", "GraphicShirt", "Hoodie", "Overall", "ShirtCrewNeck", "ShirtScoopNeck", "ShirtVNeck"],
+                    default: "BlazerShirt",
+                },
+                clotheColor: {
+                    choices: ["Black", "Blue01", "Blue02", "Blue03", "Gray01", "Gray02", "Heather", "PastelBlue", "PastelGreen", "PastelOrange", "PastelRed", "PastelYellow", "Pink", "Red", "White"],
+                    default: "Black",
+                },
+                eyeType: {
+                    choices: ["Close", "Cry", "Default", "Dizzy", "EyeRoll", "Happy", "Hearts", "Side", "Squint", "Surprised", "Wink", "WinkWacky"],
+                    default: "Default",
+                },
+                eyebrowType: {
+                    choices: ["Angry", "AngryNatural", "Default", "DefaultNatural", "FlatNatural", "RaisedExcited", "RaisedExcitedNatural", "SadConcerned", "SadConcernedNatural", "UnibrowNatural", "UpDown", "UpDownNatural"],
+                    default: "Default",
+                },
+                mouthType: {
+                    choices: ["Concerned", "Default", "Disbelief", "Eating", "Grimace", "Sad", "ScreamOpen", "Serious", "Smile", "Tongue", "Twinkle", "Vomit"],
+                    default: "Default",
+                },
+                skinColor: {
+                    choices: ["Tanned", "Yellow", "Pale", "Light", "Brown", "DarkBrown", "Black"],
+                    default: "Tanned",
+                },
+            }
+        },
+
+        QnAUserAvatarComponent: {
+            size: 45,
+        },
+
+        QnATopMenuComponent: {
+            routeActiveMenuItemMap: {
+                '': 'teams',
+                'teams': 'teams',
+                'profile': 'profile',
+            }
         }
     }
 }
